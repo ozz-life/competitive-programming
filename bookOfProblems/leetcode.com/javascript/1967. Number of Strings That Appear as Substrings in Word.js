@@ -1,0 +1,55 @@
+patterns = ["a", "abc", "bc", "d"], word = "abc"
+
+// /**
+//  * @param {string[]} patterns
+//  * @param {string} word
+//  * @return {number}
+//  */
+// var numOfStrings = function (patterns, word) {
+
+//     let num = 0
+//     for (let pattern of patterns) {
+//         if (word.includes(pattern)) {
+//             num += 1
+//         }
+//     }
+
+//     return num
+// };
+
+////////////////////////////////////////////////////////////////////////////////
+
+// var numOfStrings = function (patterns, word) {
+//     let counter = 0;
+//     patterns.map((pattern) => word.match(pattern) ? counter++ : counter);
+//     return counter;
+// };
+
+////////////////////////////////////////////////////////////////////////////////
+
+var numOfStrings = (p, w) => p.reduce((res, str) => res = w.indexOf(str) >= 0 ? res + 1 : res, 0)
+
+////////////////////////////////////////////////////////////////////////////////
+
+var numOfStrings = function (patterns, word) {
+    return patterns.reduce((acc, cur) => word.includes(cur) ? ++acc : acc, 0)
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * @param {string[]} patterns
+ * @param {string} word
+ * @return {number}
+ */
+var numOfStrings = function (patterns, word) {
+    return patterns.filter(ele => word.includes(ele)).length
+};
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+console.log(numOfStrings(patterns, word));
+

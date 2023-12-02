@@ -1,0 +1,1 @@
+select * FROM trip where town_from = 'Moscow';
