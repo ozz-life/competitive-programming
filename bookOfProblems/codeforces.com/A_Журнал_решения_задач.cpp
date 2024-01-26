@@ -354,109 +354,65 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-struct Customer {
-  int id, money;
-};
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
-}
-
-// Зная <, set сможет вывести и >, !=, =, <=, >=
-
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
-  }
-};
-
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
-  }
-};
-
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
-  }
-  os << "}";
-  return os;
-}
-
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
-}
-
 void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
+  int n;
+  std::cin >> n;
+  std::string s;
+  std::cin >> s;
+  std::map<char, int> alphabetMap;
+  int answ = 0;
 
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
+  for (char letter = 'A'; letter <= 'Z'; ++letter) {
+    alphabetMap[letter] = letter - 'A' + 1;
+  }
+
+  std::map<char, int> letterCountMap;
+  std::vector<bool> isLetterCounted(26, false);
+
+  for (char &ch : s) {
+    if (std::isalpha(ch) && !isLetterCounted[ch - 'A']) {
+      isLetterCounted[ch - 'A'] = true;
+      letterCountMap[ch]++;
+
+      if (letterCountMap[ch] <= alphabetMap[ch]) {
+        answ++;
+      }
     }
   }
+
+  cout << answ << "\n";
 }
 
-/*
- * Main
- ******************************************************************************/
+  /*
+   * Main
+   ******************************************************************************/
 
-int32_t main() {
-  // Отключение синхронизации между С и C++ вводом/выводом
-  std::ios::sync_with_stdio(false);
-  // Отключение синхронизации между cin и cout
-  // Важно! При решении интерактивных задач рекомендуется не отключать
-  // синхронизацию (или хотя бы держать в голове возможность проблем из-за
-  // отключения).
-  std::cin.tie(nullptr);
-  std::cout.tie(nullptr);
-  // Перенаправление потоков cin/cout с помощью freopen
-  // freopen("input.txt", "r", stdin);
-  // freopen("output.txt", "w", stdout);
-  // setlocale(LC_ALL, "Russian");
-  // auto time_start = steady_clock::now();
+  int32_t main() {
+    // Отключение синхронизации между С и C++ вводом/выводом
+    std::ios::sync_with_stdio(false);
+    // Отключение синхронизации между cin и cout
+    // Важно! При решении интерактивных задач рекомендуется не отключать
+    // синхронизацию (или хотя бы держать в голове возможность проблем из-за
+    // отключения).
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+    // Перенаправление потоков cin/cout с помощью freopen
+    // freopen("input.txt", "r", stdin);
+    // freopen("output.txt", "w", stdout);
+    // setlocale(LC_ALL, "Russian");
+    // auto time_start = steady_clock::now();
 
-  int64_t num_test_cases = 1;
-  // cin >> num_test_cases;
-  for (int64_t current_case = 1; current_case <= num_test_cases;
-       current_case++) // проходим по всем тест-кейсам
-  {
-    // cout << "Case #" << current_case << ": ";
-    solve();
+    int64_t num_test_cases = 1;
+    cin >> num_test_cases;
+    for (int64_t current_case = 1; current_case <= num_test_cases;
+         current_case++) // проходим по всем тест-кейсам
+    {
+      // cout << "Case #" << current_case << ": ";
+      solve();
+    }
+
+    // auto time_end = steady_clock::now();
+    // cout << duration_cast<milliseconds>(time_end - time_start).count();
+
+    return 0;
   }
-
-  // auto time_end = steady_clock::now();
-  // cout << duration_cast<milliseconds>(time_end - time_start).count();
-
-  return 0;
-}

@@ -20,7 +20,9 @@ As your shadow, unshakable. ― Gautama Buddha
 
 */
 
+#include <algorithm>
 #include <bits/stdc++.h>
+#include <functional>
 using namespace std;
 using namespace std::chrono;
 
@@ -354,77 +356,27 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-struct Customer {
-  int id, money;
-};
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
-}
-
-// Зная <, set сможет вывести и >, !=, =, <=, >=
-
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
-  }
-};
-
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
-  }
-};
-
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
-  }
-  os << "}";
-  return os;
-}
-
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
-}
-
 void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
+  int n, m;
+  cin >> n >> m;
+  std::vector<int> a(n);
 
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    }
+  while (n--) {
+    cin >> a;
   }
+
+  std::stable_sort(a.begin(), a.end(), std::greater<int>());
+
+  int ans = 0;
+  
+  for (auto &i : a) {
+    if (m <= 0)
+      break;
+    ans++;
+    m -= i;
+  }
+
+  cout << ans;
 }
 
 /*

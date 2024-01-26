@@ -1,15 +1,14 @@
 /*
-            ▒█████  ▒███████▒▒███████▒      ██▓     ██▓  █████▒▓█████
-           ▒██▒  ██▒▒ ▒ ▒ ▄▀░▒ ▒ ▒ ▄▀░     ▓██▒    ▓██▒▓██   ▒ ▓█   ▀
-           ▒██░  ██▒░ ▒ ▄▀▒░ ░ ▒ ▄▀▒░      ▒██░    ▒██▒▒████ ░ ▒███
-           ▒██   ██░  ▄▀▒   ░  ▄▀▒   ░     ▒██░    ░██░░▓█▒  ░ ▒▓█  ▄
-           ░ ████▓▒░▒███████▒▒███████▒ ██▓ ░██████▒░██░░▒█░    ░▒████▒
-           ░ ▒░▒░▒░ ░▒▒ ▓░▒░▒░▒▒ ▓░▒░▒ ▒▓▒ ░ ▒░▓  ░░▓   ▒ ░    ░░ ▒░ ░
-             ░ ▒ ▒░ ░░▒ ▒ ░ ▒░░▒ ▒ ░ ▒ ░▒  ░ ░ ▒  ░ ▒ ░ ░       ░ ░  ░
-           ░ ░ ░ ▒  ░ ░ ░ ░ ░░ ░ ░ ░ ░ ░     ░ ░    ▒ ░ ░ ░       ░
-               ░ ░    ░ ░      ░ ░      ░      ░  ░ ░             ░  ░
-                    ░        ░          ░
-          Author: Stanislav "Oz" Ozeransky | Site: https:://ozz.life/
+                        ▒█████  ▒███████▒▒███████▒      ██▓     ██▓ █████▒▓█████
+                   ▒██▒  ██▒▒ ▒ ▒ ▄▀░▒ ▒ ▒ ▄▀░     ▓██▒    ▓██▒▓██   ▒ ▓█   ▀
+                   ▒██░  ██▒░ ▒ ▄▀▒░ ░ ▒ ▄▀▒░      ▒██░    ▒██▒▒████ ░ ▒███
+                   ▒██   ██░  ▄▀▒   ░  ▄▀▒   ░     ▒██░    ░██░░▓█▒  ░ ▒▓█  ▄
+                   ░ ████▓▒░▒███████▒▒███████▒ ██▓ ░██████▒░██░░▒█░    ░▒████▒
+                   ░ ▒░▒░▒░ ░▒▒ ▓░▒░▒░▒▒ ▓░▒░▒ ▒▓▒ ░ ▒░▓  ░░▓   ▒ ░    ░░ ▒░ ░
+                         ░ ▒ ▒░ ░░▒ ▒ ░ ▒░░▒ ▒ ░ ▒ ░▒  ░ ░ ▒  ░ ▒ ░ ░       ░ ░
+░ ░ ░ ░ ▒  ░ ░ ░ ░ ░░ ░ ░ ░ ░ ░     ░ ░    ▒ ░ ░ ░       ░ ░ ░    ░ ░      ░ ░
+░      ░  ░ ░             ░  ░ ░        ░          ░ Author: Stanislav "Oz"
+Ozeransky | Site: https:://ozz.life/
 
 We are what we think.
 All that we are arises with our thoughts.
@@ -268,6 +267,16 @@ std::vector<int64_t> z_function(std::string s) {
   return z;
 }
 
+std::string removeLeadingZeros(const std::string &s) {
+  auto it = s.begin();
+
+  while (it != s.end() && *it == '0') {
+    ++it;
+  }
+
+  return std::string(it, s.end());
+}
+
 /*
  * Debug
  ******************************************************************************/
@@ -354,77 +363,44 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-struct Customer {
-  int id, money;
-};
+// алгоритм "Бойера-Мура для поиска большинства".
 
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
-}
+int findMajorityElement(const std::vector<int> &arr) {
+  int candidate = -1;
+  int count = 0;
 
-// Зная <, set сможет вывести и >, !=, =, <=, >=
-
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
+  for (int num : arr) {
+    if (count == 0) {
+      candidate = num;
+      count = 1;
+    } else if (candidate == num) {
+      count++;
+    } else {
+      count--;
+    }
   }
-};
 
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
+  count = 0;
+  for (int num : arr) {
+    if (num == candidate) {
+      count++;
+    }
   }
-};
 
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
-  }
-  os << "}";
-  return os;
-}
-
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
+  return (count > arr.size() / 2) ? candidate : -1;
 }
 
 void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
+  int n;
+  std::cin >> n;
 
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    }
+  std::vector<int> arr(n);
+  for (int i = 0; i < n; ++i) {
+    std::cin >> arr[i];
   }
+
+  int result = findMajorityElement(arr);
+  std::cout << result << std::endl;
 }
 
 /*

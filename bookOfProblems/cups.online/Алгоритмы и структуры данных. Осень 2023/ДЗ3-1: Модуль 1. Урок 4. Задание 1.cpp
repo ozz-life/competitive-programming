@@ -268,6 +268,16 @@ std::vector<int64_t> z_function(std::string s) {
   return z;
 }
 
+std::string removeLeadingZeros(const std::string &s) {
+  auto it = s.begin();
+
+  while (it != s.end() && *it == '0') {
+    ++it;
+  }
+
+  return std::string(it, s.end());
+}
+
 /*
  * Debug
  ******************************************************************************/
@@ -354,77 +364,53 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-struct Customer {
-  int id, money;
-};
+void merge(std::vector<int> &arr, const int l, const int m, const int r) {
+  const int n1 = m - l + 1;
+  const int n2 = r - m;
+  std::vector<int> left_arr(n1), right_arr(n2);
+  for (int i = 0; i < n1; ++i) {
+    left_arr[i] = arr[l + i];
+  }
+  for (int j = 0; j < n2; ++j) {
+    right_arr[j] = arr[m + 1 + j];
+  }
 
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
+  int i = 0, j = 0, k = l;
+  while (i < n1 and j < n2) {
+    if (left_arr[i] <= right_arr[j]) {
+      arr[k] = left_arr[i++];
+    } else {
+      arr[k] = right_arr[j++];
+    }
+    k++;
+  }
+
+  while (i < n1) {
+    arr[k++] = left_arr[i++];
+  }
+  while (j < n2) {
+    arr[k++] = right_arr[j++];
+  }
 }
 
-// Зная <, set сможет вывести и >, !=, =, <=, >=
-
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
-  }
-};
-
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
-  }
-};
-
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
-  }
-  os << "}";
-  return os;
-}
-
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
+void MergeSort(std::vector<int>& arr, const int l, const int r) {
+	if(l >= r) return;
+	
+	const int m = l + (r - l) / 2;
+	MergeSort(arr, l, m);
+	MergeSort(arr, m + 1, r);
+	merge(arr, l, m, r);
 }
 
 void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
+  int n;
+  cin >> n;
+  std::vector<int> a(n);
+  cin >> a;
 
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    }
-  }
+  MergeSort(a, 0, n - 1);
+
+  cout << a;
 }
 
 /*

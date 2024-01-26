@@ -354,77 +354,41 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-struct Customer {
-  int id, money;
-};
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
-}
-
-// Зная <, set сможет вывести и >, !=, =, <=, >=
-
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
-  }
-};
-
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
-  }
-};
-
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
-  }
-  os << "}";
-  return os;
-}
-
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
-}
+// 4 4
+// 1 3 4 6
+// 2 4 5 7
+// 1
 
 void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
 
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
+  int n, m;
+  std::cin >> n >> m;
+  std::vector<int> a(n), b(m);
+  std::map<int, int> mpA, mpB;
+
+  for (int i = 0; i < n; ++i) {
+    std::cin >> a[i];
+    mpA[a[i]]++;
+  }
+
+  for (int j = 0; j < m; ++j) {
+    std::cin >> b[j];
+    mpB[b[j]]++;
+  }
+
+  int answ = 0;
+
+  for (const auto &pairA : mpA) {
+    int num = pairA.first;
+    int countA = pairA.second;
+
+    if (mpB.find(num) != mpB.end()) {
+      int countB = mpB[num];
+      answ += countA * countB;
     }
   }
+
+  std::cout << answ << std::endl;
 }
 
 /*

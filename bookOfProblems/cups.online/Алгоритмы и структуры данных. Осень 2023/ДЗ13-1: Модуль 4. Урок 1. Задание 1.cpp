@@ -1,15 +1,14 @@
 /*
-            ▒█████  ▒███████▒▒███████▒      ██▓     ██▓  █████▒▓█████
-           ▒██▒  ██▒▒ ▒ ▒ ▄▀░▒ ▒ ▒ ▄▀░     ▓██▒    ▓██▒▓██   ▒ ▓█   ▀
-           ▒██░  ██▒░ ▒ ▄▀▒░ ░ ▒ ▄▀▒░      ▒██░    ▒██▒▒████ ░ ▒███
-           ▒██   ██░  ▄▀▒   ░  ▄▀▒   ░     ▒██░    ░██░░▓█▒  ░ ▒▓█  ▄
-           ░ ████▓▒░▒███████▒▒███████▒ ██▓ ░██████▒░██░░▒█░    ░▒████▒
-           ░ ▒░▒░▒░ ░▒▒ ▓░▒░▒░▒▒ ▓░▒░▒ ▒▓▒ ░ ▒░▓  ░░▓   ▒ ░    ░░ ▒░ ░
-             ░ ▒ ▒░ ░░▒ ▒ ░ ▒░░▒ ▒ ░ ▒ ░▒  ░ ░ ▒  ░ ▒ ░ ░       ░ ░  ░
-           ░ ░ ░ ▒  ░ ░ ░ ░ ░░ ░ ░ ░ ░ ░     ░ ░    ▒ ░ ░ ░       ░
-               ░ ░    ░ ░      ░ ░      ░      ░  ░ ░             ░  ░
-                    ░        ░          ░
-          Author: Stanislav "Oz" Ozeransky | Site: https:://ozz.life/
+                        ▒█████  ▒███████▒▒███████▒      ██▓     ██▓ █████▒▓█████
+                   ▒██▒  ██▒▒ ▒ ▒ ▄▀░▒ ▒ ▒ ▄▀░     ▓██▒    ▓██▒▓██   ▒ ▓█   ▀
+                   ▒██░  ██▒░ ▒ ▄▀▒░ ░ ▒ ▄▀▒░      ▒██░    ▒██▒▒████ ░ ▒███
+                   ▒██   ██░  ▄▀▒   ░  ▄▀▒   ░     ▒██░    ░██░░▓█▒  ░ ▒▓█  ▄
+                   ░ ████▓▒░▒███████▒▒███████▒ ██▓ ░██████▒░██░░▒█░    ░▒████▒
+                   ░ ▒░▒░▒░ ░▒▒ ▓░▒░▒░▒▒ ▓░▒░▒ ▒▓▒ ░ ▒░▓  ░░▓   ▒ ░    ░░ ▒░ ░
+                         ░ ▒ ▒░ ░░▒ ▒ ░ ▒░░▒ ▒ ░ ▒ ░▒  ░ ░ ▒  ░ ▒ ░ ░       ░ ░
+░ ░ ░ ░ ▒  ░ ░ ░ ░ ░░ ░ ░ ░ ░ ░     ░ ░    ▒ ░ ░ ░       ░ ░ ░    ░ ░      ░ ░
+░      ░  ░ ░             ░  ░ ░        ░          ░ Author: Stanislav "Oz"
+Ozeransky | Site: https:://ozz.life/
 
 We are what we think.
 All that we are arises with our thoughts.
@@ -112,35 +111,35 @@ template <typename T> ostream &operator<<(ostream &out, vector<T> &a) {
  * Graph
  ******************************************************************************/
 
-class Graph {
-public:
-  Graph(int64_t vertexCount) : adjacencyList(vertexCount) {}
+// class Graph {
+// public:
+//   Graph(int64_t vertexCount) : adjacencyList(vertexCount) {}
 
-  void addEdge(int64_t vertex1, int64_t vertex2, bool isDirected) {
-    adjacencyList[vertex1].push_back(vertex2);
-    if (!isDirected) {
-      adjacencyList[vertex2].push_back(vertex1);
-    }
-  }
+//   void addEdge(int64_t vertex1, int64_t vertex2, bool isDirected) {
+//     adjacencyList[vertex1].push_back(vertex2);
+//     if (!isDirected) {
+//       adjacencyList[vertex2].push_back(vertex1);
+//     }
+//   }
 
-  void printGraph() const {
-    int64_t vertexCount = adjacencyList.size();
-    for (int64_t i = 0; i < vertexCount; ++i) {
-      std::cout << "Vertex " << i + 1 << ": ";
-      for (int64_t neighbor : adjacencyList[i]) {
-        std::cout << neighbor + 1 << " ";
-      }
-      std::cout << std::endl;
-    }
-  }
+//   void printGraph() const {
+//     int64_t vertexCount = adjacencyList.size();
+//     for (int64_t i = 0; i < vertexCount; ++i) {
+//       std::cout << "Vertex " << i + 1 << ": ";
+//       for (int64_t neighbor : adjacencyList[i]) {
+//         std::cout << neighbor + 1 << " ";
+//       }
+//       std::cout << std::endl;
+//     }
+//   }
 
-  int64_t findDegree(int64_t vertex) const {
-    return adjacencyList[vertex].size();
-  }
+//   int64_t findDegree(int64_t vertex) const {
+//     return adjacencyList[vertex].size();
+//   }
 
-private:
-  std::vector<std::vector<int64_t>> adjacencyList;
-};
+// private:
+//   std::vector<std::vector<int64_t>> adjacencyList;
+// };
 
 /*
  * String
@@ -268,6 +267,16 @@ std::vector<int64_t> z_function(std::string s) {
   return z;
 }
 
+std::string removeLeadingZeros(const std::string &s) {
+  auto it = s.begin();
+
+  while (it != s.end() && *it == '0') {
+    ++it;
+  }
+
+  return std::string(it, s.end());
+}
+
 /*
  * Debug
  ******************************************************************************/
@@ -354,76 +363,84 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-struct Customer {
-  int id, money;
-};
+// class Graph {
+// public:
+//   void addEdge(int v, int w) {
+//     adjList[v].push_back(w);
+//     adjList[w].push_back(v);
+//   }
+//   const std::vector<int> &getAdjVertices(int v) const { return adjList.at(v);
+//   } int getNumVertices() const { return adjList.size(); } int
+//   countNodesDFS(int start) {
+//     std::set<int> visited;
+//     DFS(start, visited);
+//     return visited.size();
+//   }
 
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
-}
+// private:
+//   std::map<int, std::vector<int>> adjList;
+//   void DFS(int v, std::set<int> &visited) {
+//     visited.insert(v);
+//     for (int neighbor : getAdjVertices(v)) {
+//       if (visited.find(neighbor) == visited.end()) {
+//         DFS(neighbor, visited);
+//       }
+//     }
+//   }
+// };
 
-// Зная <, set сможет вывести и >, !=, =, <=, >=
+class Graph {
+public:
+  void addEdge(int v, int w) {
+    adjList[v].push_back(w);
+    adjList[w].push_back(v);
+  }
 
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
+  const std::vector<int> &getAdjVertices(int v) const { return adjList.at(v); }
+
+  int getNumVertices() const { return adjList.size(); }
+
+  bool hasTriangle() {
+    for (int v = 1; v <= getNumVertices(); ++v) {
+      std::set<int> visited;
+      DFS(v, visited);
+
+      if (visited.size() == 3) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+private:
+  std::map<int, std::vector<int>> adjList;
+
+  void DFS(int v, std::set<int> &visited) {
+    visited.insert(v);
+    for (int neighbor : getAdjVertices(v)) {
+      if (visited.find(neighbor) == visited.end()) {
+        DFS(neighbor, visited);
+      }
+    }
   }
 };
-
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
-  }
-};
-
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
-  }
-  os << "}";
-  return os;
-}
-
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
-}
 
 void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
+  Graph g;
+  int n;
+  std::cin >> n;
 
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    }
+  while (n--) {
+    int x, y;
+    std::cin >> x >> y;
+    g.addEdge(x, y);
+  }
+
+  if (g.hasTriangle()) {
+    std::cout << "YES" << std::endl;
+  } else {
+    std::cout << "NO" << std::endl;
   }
 }
 

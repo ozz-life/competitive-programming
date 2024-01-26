@@ -354,77 +354,47 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-struct Customer {
-  int id, money;
-};
+// Два идентичных способа, отличаются только написанием циклов
 
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
-}
+// void solve() {
+//   int n, m;
+//   cin >> n >> m;
+//   std::vector<int> a(n), b(m);
+//   cin >> a;
+//   cin >> b;
 
-// Зная <, set сможет вывести и >, !=, =, <=, >=
+//   std::vector<int> res(m);
 
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
-  }
-};
+//   int i = 0, j = 0;
+//   while (i < a.size() or j < b.size()) {
+//     if (j == b.size() or (i < a.size() and a[i] < b[j])) {
+//       ++i;
+//     } else {
+//       res[j] = i;
+//       ++j;
+//     }
+//   }
 
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
-  }
-};
-
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
-  }
-  os << "}";
-  return os;
-}
-
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
-}
+//   cout << res;
+// }
 
 void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
+  int n, m;
+  cin >> n >> m;
+  std::vector<int> a(n), b(m);
+  cin >> a;
+  cin >> b;
 
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    }
+  std::vector<int> res(m);
+
+  int i = 0;
+  for (int j = 0; j < m; ++j) {
+    while (i < a.size() and a[i] < b[j])
+      ++i;
+    res[j] = i;
   }
+
+  cout << res;
 }
 
 /*

@@ -24,7 +24,7 @@ As your shadow, unshakable. ― Gautama Buddha
 using namespace std;
 using namespace std::chrono;
 
-#define int int64_t
+// #define int int64_t
 
 typedef int64_t ll;
 typedef uint64_t ull;
@@ -354,29 +354,130 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-void solve() {
-  std::string line;
-  int totalSum = 0;
+template <typename X, typename Y> X &remin(X &x, const Y &y) {
+  return x = (y < x) ? y : x;
+}
+template <typename X, typename Y> X &remax(X &x, const Y &y) {
+  return x = (x < y) ? y : x;
+}
 
-  while (std::getline(std::cin, line)) {
-    // Найти первую и последнюю цифры в строке
-    auto firstDigit = std::find_if(line.begin(), line.end(), [](char ch) {
-      return std::isdigit(static_cast<unsigned char>(ch));
-    });
-    auto lastDigit = std::find_if(line.rbegin(), line.rend(), [](char ch) {
-      return std::isdigit(static_cast<unsigned char>(ch));
-    });
+// Начинается ли строка с этой строчки или нет
+bool beginsWith(const std::string &what, const std::string &t) {
+  return isz(t) <= isz(what) && what.substr(0, isz(t)) == t;
+}
 
-    // Преобразовать цифры в строку и конкатенировать
-    std::string concatenatedString =
-        std::to_string(*firstDigit - '0') + std::to_string(*lastDigit - '0');
+//     // Бьём по пробелам двумя указателями
+//     // std::vector<std::string> a;
+//     // for (int i = 0, j; i < isz(s); i = j) {
+//     //   for (int j = i; j < isz(s) and !std::isspace(s[j]); ++j) {
+//     //     a.push_back(s.substr(i, j - 1));
+//     //     ++j;
+//     //   }
+//     // }
 
-    // Преобразовать строку в число и добавить к сумме
-    totalSum += std::stoi(concatenatedString);
+int part1() {
+  std::string s;
+  int answ{};
+
+  // Loop through each line of input
+  while (std::getline(std::cin, s)) {
+    int id;
+    sscanf(s.c_str(), "Game %d", &id); // Extract the game ID from the input
+
+    s = s.substr(s.find(':') + 2); // Skip the initial part of the line
+
+    s += ";"; // Add a delimiter at the end to simplify parsing
+
+    std::map<std::string, int> maxCount;
+
+    // Process each subset of cubes revealed in the game
+    while (isz(s)) {
+      std::map<std::string, int> count;
+      int p = s.find(';');
+      std::string t = s.substr(0, p);
+      s = s.substr(p + 1);
+      t += ','; // Add a delimiter at the end to simplify parsing
+
+      // Parse each cube subset and update the count
+      while (isz(t)) {
+        int i = t.find(',');
+        std::string tt = t.substr(0, i);
+        int cnt;
+        char currColor[101];
+        int code = sscanf(tt.c_str(), "%d %s", &cnt, currColor);
+        assert(code == 2);
+        count[currColor] += cnt;
+        t = t.substr(i + 1);
+      }
+
+      // Update the maximum count for each color
+      for (auto &[key, value] : count) {
+        remax(maxCount[key], value);
+      }
+    }
+
+    // Check if the game is possible based on the target counts
+    if (maxCount["red"] <= 12 and maxCount["green"] <= 13 and
+        maxCount["blue"] <= 14) {
+      answ += id; // Add the game ID to the answer if the game is possible
+    }
   }
 
-  // Вывести общую сумму
-  std::cout << "Total sum: " << totalSum << std::endl;
+  return answ; // Return the final sum of game IDs
+}
+
+int part2() {
+  std::string s;
+  int answ{};
+
+  // Loop through each line of input
+  while (std::getline(std::cin, s)) {
+    int id;
+    sscanf(s.c_str(), "Game %d", &id); // Extract the game ID from the input
+
+    s = s.substr(s.find(':') + 2); // Skip the initial part of the line
+
+    s += ";"; // Add a delimiter at the end to simplify parsing
+
+    std::map<std::string, int> maxCount;
+
+    // Process each subset of cubes revealed in the game
+    while (isz(s)) {
+      std::map<std::string, int> count;
+      int p = s.find(';');
+      std::string t = s.substr(0, p);
+      s = s.substr(p + 1);
+      t += ','; // Add a delimiter at the end to simplify parsing
+
+      // Parse each cube subset and update the count
+      while (isz(t)) {
+        int i = t.find(',');
+        std::string tt = t.substr(0, i);
+        int cnt;
+        char currColor[101];
+        int code = sscanf(tt.c_str(), "%d %s", &cnt, currColor);
+        assert(code == 2);
+        count[currColor] += cnt;
+        t = t.substr(i + 1);
+      }
+
+      // Update the maximum count for each color
+      for (auto &[key, value] : count) {
+        remax(maxCount[key], value);
+      }
+    }
+
+    // Check if the game is possible based on the target counts
+    int temp = maxCount["red"] * maxCount["green"] * maxCount["blue"];
+    answ += temp;
+  }
+
+  return answ;
+}
+
+void solve() {
+  //cout << part1() << endl;
+  cout << part2() << endl;
 }
 
 /*
@@ -390,8 +491,8 @@ int32_t main() {
   // Важно! При решении интерактивных задач рекомендуется не отключать
   // синхронизацию (или хотя бы держать в голове возможность проблем из-за
   // отключения).
-  std::cin.tie(nullptr);
-  std::cout.tie(nullptr);
+  //   std::cin.tie(nullptr);
+  //   std::cout.tie(nullptr);
   // Перенаправление потоков cin/cout с помощью freopen
   // freopen("input.txt", "r", stdin);
   // freopen("output.txt", "w", stdout);

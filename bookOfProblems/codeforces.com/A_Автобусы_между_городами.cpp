@@ -21,10 +21,11 @@ As your shadow, unshakable. ― Gautama Buddha
 */
 
 #include <bits/stdc++.h>
+#include <cstdint>
 using namespace std;
 using namespace std::chrono;
 
-#define int int64_t
+// #define int int64_t
 
 typedef int64_t ll;
 typedef uint64_t ull;
@@ -268,6 +269,16 @@ std::vector<int64_t> z_function(std::string s) {
   return z;
 }
 
+std::string removeLeadingZeros(const std::string &s) {
+  auto it = s.begin();
+
+  while (it != s.end() && *it == '0') {
+    ++it;
+  }
+
+  return std::string(it, s.end());
+}
+
 /*
  * Debug
  ******************************************************************************/
@@ -354,78 +365,73 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-struct Customer {
-  int id, money;
-};
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
-}
-
-// Зная <, set сможет вывести и >, !=, =, <=, >=
-
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
-  }
-};
-
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
-  }
-};
-
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
-  }
-  os << "}";
-  return os;
-}
-
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
-}
+// Рассмотрим интервал времени, когда Симион будет находиться на трассе строго
+// между городами (x1, y1), (x1 = 60h + m, y1 = x1 + ta). Переберём встречный
+// автобус. Пусть (x2, y2) — это интервал времени, когда встречный автобус будет
+// находиться строго между городами. Если пересечение этих интервалов
+// (x = max(x1, x2), y = min(y1, y2)) не пусто, то Симион посчитает этот
+// автобус.
 
 void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
+  int a, ta;
+  std::cin >> a >> ta;
+  int b, tb;
+  std::cin >> b >> tb;
+  int departure_hour, departure_minute;
+  std::cin >> departure_hour;
+  std::cin.ignore();
+  std::cin >> departure_minute;
 
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
+  int arrival_start = departure_hour * 60 + departure_minute;
+  int arrival_end = arrival_start + ta;
+
+  // Подсчет количества встречных автобусов
+  int counter = 0;
+  for (int departure_B = 5 * 60; departure_B < 24 * 60; departure_B += b) {
+    int arrival_B = departure_B + tb;
+
+    // Проверка пересечения временных интервалов
+    int intersection_start = std::max(arrival_start, departure_B);
+    int intersection_end = std::min(arrival_end, arrival_B);
+
+    // Если интервал пересекается, увеличиваем счетчик
+    if (intersection_start < intersection_end) {
+      counter++;
     }
   }
+
+  std::cout << counter << std::endl;
 }
+
+// Нам нужно найти количество встречных автобусов, которые вышли из
+// B до прибытия нашего автобуса в B. И найти количество встречных автобусов,
+// которые прибыли в A до выхода нашего автобуса из A. Разница между этими
+// числами и будет ответ. Почему-то WA на 4 тесте
+
+// void solve() {
+//   int64_t a, ta;
+//   std::cin >> a >> ta;
+//   int64_t b, tb;
+//   std::cin >> b >> tb;
+//   int64_t departure_hour, departure_minute;
+//   std::cin >> departure_hour;
+//   std::cin.ignore();
+//   std::cin >> departure_minute;
+
+//   const int64_t start_time = 5 * 60;
+//   const int64_t end_time = 23 * 60 + 59;
+
+//   int64_t departure_time = departure_hour * 60 + departure_minute -
+//   start_time; int64_t arrival_time = departure_time + ta;
+
+//   int64_t before_departure = std::max(departure_time - tb,
+//   static_cast<int64_t>(0)) / b; if (departure_time >= tb) {
+//     before_departure++;
+//   }
+//   int64_t before_arrival = std::min(arrival_time - 1, end_time) / b + 1;
+
+//   std::cout << before_arrival - before_departure;
+// }
 
 /*
  * Main
@@ -438,8 +444,8 @@ int32_t main() {
   // Важно! При решении интерактивных задач рекомендуется не отключать
   // синхронизацию (или хотя бы держать в голове возможность проблем из-за
   // отключения).
-  std::cin.tie(nullptr);
-  std::cout.tie(nullptr);
+  //   std::cin.tie(nullptr);
+  //   std::cout.tie(nullptr);
   // Перенаправление потоков cin/cout с помощью freopen
   // freopen("input.txt", "r", stdin);
   // freopen("output.txt", "w", stdout);

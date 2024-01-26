@@ -1,15 +1,14 @@
 /*
-            ▒█████  ▒███████▒▒███████▒      ██▓     ██▓  █████▒▓█████
-           ▒██▒  ██▒▒ ▒ ▒ ▄▀░▒ ▒ ▒ ▄▀░     ▓██▒    ▓██▒▓██   ▒ ▓█   ▀
-           ▒██░  ██▒░ ▒ ▄▀▒░ ░ ▒ ▄▀▒░      ▒██░    ▒██▒▒████ ░ ▒███
-           ▒██   ██░  ▄▀▒   ░  ▄▀▒   ░     ▒██░    ░██░░▓█▒  ░ ▒▓█  ▄
-           ░ ████▓▒░▒███████▒▒███████▒ ██▓ ░██████▒░██░░▒█░    ░▒████▒
-           ░ ▒░▒░▒░ ░▒▒ ▓░▒░▒░▒▒ ▓░▒░▒ ▒▓▒ ░ ▒░▓  ░░▓   ▒ ░    ░░ ▒░ ░
-             ░ ▒ ▒░ ░░▒ ▒ ░ ▒░░▒ ▒ ░ ▒ ░▒  ░ ░ ▒  ░ ▒ ░ ░       ░ ░  ░
-           ░ ░ ░ ▒  ░ ░ ░ ░ ░░ ░ ░ ░ ░ ░     ░ ░    ▒ ░ ░ ░       ░
-               ░ ░    ░ ░      ░ ░      ░      ░  ░ ░             ░  ░
-                    ░        ░          ░
-          Author: Stanislav "Oz" Ozeransky | Site: https:://ozz.life/
+                        ▒█████  ▒███████▒▒███████▒      ██▓     ██▓ █████▒▓█████
+                   ▒██▒  ██▒▒ ▒ ▒ ▄▀░▒ ▒ ▒ ▄▀░     ▓██▒    ▓██▒▓██   ▒ ▓█   ▀
+                   ▒██░  ██▒░ ▒ ▄▀▒░ ░ ▒ ▄▀▒░      ▒██░    ▒██▒▒████ ░ ▒███
+                   ▒██   ██░  ▄▀▒   ░  ▄▀▒   ░     ▒██░    ░██░░▓█▒  ░ ▒▓█  ▄
+                   ░ ████▓▒░▒███████▒▒███████▒ ██▓ ░██████▒░██░░▒█░    ░▒████▒
+                   ░ ▒░▒░▒░ ░▒▒ ▓░▒░▒░▒▒ ▓░▒░▒ ▒▓▒ ░ ▒░▓  ░░▓   ▒ ░    ░░ ▒░ ░
+                         ░ ▒ ▒░ ░░▒ ▒ ░ ▒░░▒ ▒ ░ ▒ ░▒  ░ ░ ▒  ░ ▒ ░ ░       ░ ░
+░ ░ ░ ░ ▒  ░ ░ ░ ░ ░░ ░ ░ ░ ░ ░     ░ ░    ▒ ░ ░ ░       ░ ░ ░    ░ ░      ░ ░
+░      ░  ░ ░             ░  ░ ░        ░          ░ Author: Stanislav "Oz"
+Ozeransky | Site: https:://ozz.life/
 
 We are what we think.
 All that we are arises with our thoughts.
@@ -268,6 +267,16 @@ std::vector<int64_t> z_function(std::string s) {
   return z;
 }
 
+std::string removeLeadingZeros(const std::string &s) {
+  auto it = s.begin();
+
+  while (it != s.end() && *it == '0') {
+    ++it;
+  }
+
+  return std::string(it, s.end());
+}
+
 /*
  * Debug
  ******************************************************************************/
@@ -354,79 +363,133 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-struct Customer {
-  int id, money;
-};
+// void solve() {
+//   std::string s;
+//   int n, p, q;
+//   std::cin >> n >> p >> q >> s;
 
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
+//   for (int x = 0; x <= n; ++x) {
+//     for (int y = 0; y <= n; ++y) {
+//       if (x * p + y * q == n) {
+//         std::cout << x + y << "\n";
+//         int it = 0;
+//         for (int i = 0; i < x; ++i) {
+//           std::cout << s.substr(it, p) << "\n";
+//           it += p;
+//         }
+//         for (int i = 0; i < y; ++i) {
+//           std::cout << s.substr(it, q) << "\n";
+//           it += q;
+//         }
+//         return;
+//       }
+//     }
+//   }
+//   std::cout << "-1\n";
+// }
+
+// Также можно просто выполнить итерацию от 0 до max_possible_B и проверить,
+// есть ли ((n - i*q) mod p == 0). Если есть - это ответ. Если нет - невозможно.
+// void solve() {
+//   std::string s;
+//   int n, p, q;
+//   std::cin >> n >> p >> q >> s;
+
+//   bool found = false;
+//   int y = 0;
+
+//   for (int i = 0; i <= 100; i++) {
+//     int c = n - q * i;
+//     if (c < 0)
+//       break;
+//     if (c % p == 0) {
+//       found = true;
+//       y = i;
+//       break;
+//     }
+//   }
+
+//   if (found) {
+//     int x = (n - q * y) / p;
+//     cout << x + y << endl;
+
+//     int pos = 0;
+//     while (x > 0) {
+//       cout << s.substr(pos, p) << endl;
+//       pos += p;
+//       x--;
+//     }
+
+//     while (y > 0) {
+//       cout << s.substr(pos, q) << endl;
+//       pos += q;
+//       y--;
+//     }
+//   } else
+//     cout << "-1" << endl;
+// }
+
+// также существует простое решение O(N) DP, в котором F[i] истинно, если мы
+// можем представить i как A*p+B*q, и ложно в противном случае. Легко
+// восстановить возможную последовательность, если F[n] истинно :)
+
+const int N = 128;
+
+int n, p, q;
+char a[N];
+vector<pair<int, int>> ans;
+bool used[N], state[N];
+int best[N];
+
+bool recurse(int pos) {
+  if (pos == n + 1)
+    return true;
+  if (pos > n + 1)
+    return false;
+  if (used[pos])
+    return state[pos];
+  used[pos] = true;
+  if (recurse(pos + p)) {
+    best[pos] = pos + p;
+    state[pos] = true;
+    return true;
+  }
+  if (recurse(pos + q)) {
+    best[pos] = pos + q;
+    state[pos] = true;
+    return true;
+  }
+  return false;
 }
 
-// Зная <, set сможет вывести и >, !=, =, <=, >=
-
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
-  }
-};
-
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
-  }
-};
-
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
-  }
-  os << "}";
-  return os;
+void restore(int pos) {
+  if (pos > n)
+    return;
+  ans.push_back(make_pair(pos, best[pos] - 1));
+  restore(best[pos]);
 }
 
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
+string get_string(int from, int to) {
+  string ans;
+  int i;
+  for (i = from; i <= to; i++)
+    ans.push_back(a[i]);
+  return ans;
 }
 
 void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
-
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    }
+  int i;
+  scanf("%d %d %d", &n, &p, &q);
+  scanf("%s", a + 1);
+  if (recurse(1)) {
+    restore(1);
+    printf("%d\n", (int)(ans.size()));
+    for (i = 0; i < (int)(ans.size()); i++)
+      printf("%s\n", get_string(ans[i].first, ans[i].second).c_str());
+  } else {
+    printf("-1\n");
   }
 }
-
 /*
  * Main
  ******************************************************************************/

@@ -268,6 +268,16 @@ std::vector<int64_t> z_function(std::string s) {
   return z;
 }
 
+std::string removeLeadingZeros(const std::string &s) {
+  auto it = s.begin();
+
+  while (it != s.end() && *it == '0') {
+    ++it;
+  }
+
+  return std::string(it, s.end());
+}
+
 /*
  * Debug
  ******************************************************************************/
@@ -354,77 +364,50 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-struct Customer {
-  int id, money;
-};
+// Легко видеть, что в задаче возможно всего три случая. Если король находится
+// углу доски, то у него 3 возможных хода. Если он стоит на краю доски, то у
+// него 5 возможных хода (если конечно он не в углу). Наконец, если король не
+// стоит на краю доски, то у него всего 8 возожных хода.
 
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
-}
+// void solve() {
+//   std::string s;
+//   std::cin >> s;
+//   char c = s[0];
+//   char d = s[1];
 
-// Зная <, set сможет вывести и >, !=, =, <=, >=
-
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
-  }
-};
-
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
-  }
-};
-
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
-  }
-  os << "}";
-  return os;
-}
-
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
-}
+//   if ((c == 'a' && d == '8') || (c == 'h' && d == '8') ||
+//       (c == 'a' && d == '1') || (c == 'h' && d == '1')) {
+//     std::cout << "3";
+//   } else if ((d == '8' && (c >= 'b' && c <= 'g')) ||
+//              (d == '1' && (c >= 'b' && c <= 'g'))) {
+//     std::cout << "5";
+//   } else if ((c == 'a' && (d >= '2' && d <= '7')) ||
+//              (c == 'h' && (d >= '2' && d <= '7'))) {
+//     std::cout << "5";
+//   } else {
+//     std::cout << "8";
+//   }
+// }
 
 void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
+  std::string s;
+  std::cin >> s;
+  char c = s[0];
+  char d = s[1];
 
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    }
-  }
+  int cnt = 0;
+  if (c == 'a' || c == 'h')
+    cnt++;
+  if (d == '1' || d == '8')
+    cnt++;
+  if (cnt == 0)
+    puts("8");
+  else if (cnt == 1)
+    puts("5");
+  else if (cnt == 2)
+    puts("3");
+  else
+    throw;
 }
 
 /*

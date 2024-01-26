@@ -24,7 +24,7 @@ As your shadow, unshakable. ― Gautama Buddha
 using namespace std;
 using namespace std::chrono;
 
-#define int int64_t
+// #define int int64_t
 
 typedef int64_t ll;
 typedef uint64_t ull;
@@ -273,7 +273,7 @@ std::vector<int64_t> z_function(std::string s) {
  ******************************************************************************/
 
 #define watch(x) cout << #x << " = " << (x) << endl;
-#define d(x) cout << #x << " == " << (x) << endl;
+// #define d(x) cout << #x << " == " << (x) << endl;
 
 template <typename A, typename B> string to_string(pair<A, B> p);
 
@@ -354,77 +354,142 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-struct Customer {
-  int id, money;
-};
+int part1() {
+  std::vector<std::string> a;
+  std::string s;
+  int answ{};
 
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
+  while (std::getline(std::cin, s)) {
+    a.push_back(s);
+  }
+
+  // цикл по строчкам
+  for (int r = 0; r < isz(a); ++r) {
+    int c = 0;
+    // цикл по столбцам
+    while (c < isz(a[r])) {
+      while (c < isz(a[r]) and !std::isdigit(a[r][c]))
+        ++c;
+
+      if (c == isz(a[r]))
+        continue;
+
+      int number;
+      int code = sscanf(a[r].c_str() + c, "%d", &number);
+      assert(code == 1);
+
+      int c2 = c;
+      while (c2 < isz(a[r]) and std::isdigit(a[r][c2]))
+        ++c2;
+
+      bool ok = 0;
+      for (int j = c; j < c2; ++j) {
+        // (r,j)
+        for (int dr = -1; dr <= 1; ++dr) {
+          for (int dc = -1; dc <= 1; ++dc) {
+            int nr = r + dr;
+            int nc = j + dc;
+            if (nr < 0 or nr >= isz(a))
+              continue;
+            if (nc < 0 or nc >= isz(a[r]))
+              continue;
+            ok |= (!std::isdigit(a[nr][nc]) and a[nr][nc] != '.');
+          }
+        }
+      }
+
+      c = c2;
+      if (ok) {
+        answ += number;
+        // std::cout << "number = " << number << std::endl;
+      }
+    }
+  }
+
+  return answ;
 }
 
-// Зная <, set сможет вывести и >, !=, =, <=, >=
+int part2() {
+  std::vector<std::string> a;
+  std::string s;
+  int answ{}, nNumbers{0};
 
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
+  while (std::getline(std::cin, s)) {
+    a.push_back(s);
   }
-};
 
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
+  const int nRows = isz(a);
+  const int nCols = isz(a[0]);
+
+  std::vector<std::vector<int>> d(nRows, std::vector<int>(nCols, -1));
+  std::vector<std::vector<int>> id(nRows, std::vector<int>(nCols, -1));
+  std::map<int, int> whichNumber;
+
+  // цикл по строчкам
+  for (int r = 0; r < nRows; ++r) {
+    int c = 0;
+    // цикл по столбцам
+    while (c < nCols) {
+      while (c < nCols and !std::isdigit(a[r][c]))
+        ++c;
+
+      if (c == nCols)
+        continue;
+
+      nNumbers++;
+      int number;
+      int code = sscanf(a[r].c_str() + c, "%d", &number);
+      assert(code == 1);
+
+      int c2 = c;
+      while (c2 < nCols and std::isdigit(a[r][c2]))
+        ++c2;
+
+      whichNumber[nNumbers] = number;
+      for (int j = c; j < c2; ++j) {
+        d[r][j] = number;
+        id[r][j] = nNumbers;
+      }
+      c = c2;
+    }
   }
-};
 
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
+  // цикл по строчкам
+  for (int r = 0; r < nRows; ++r) {
+    for (int c = 0; c < nCols; ++c) {
+      if (a[r][c] == '*') {
+        std::set<int> ids;
+        for (int dr = -1; dr <= 1; ++dr) {
+          for (int dc = -1; dc <= 1; ++dc) {
+            int nr = r + dr;
+            int nc = c + dc;
+            if (nr < 0 or nr >= isz(a))
+              continue;
+            if (nc < 0 or nc >= isz(a[r]))
+              continue;
+
+            if (d[nr][nc] != -1) {
+              ids.insert(id[nr][nc]);
+            }
+          }
+        }
+
+        if (isz(ids) == 2) {
+          int mult = 1;
+          for (auto id : ids)
+            mult *= whichNumber[id];
+          answ += mult;
+        }
+      }
+    }
   }
-  os << "}";
-  return os;
-}
 
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
+  return answ;
 }
 
 void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
-
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    }
-  }
+  // cout << part1() << endl;
+  cout << part2() << endl;
 }
 
 /*
@@ -438,8 +503,8 @@ int32_t main() {
   // Важно! При решении интерактивных задач рекомендуется не отключать
   // синхронизацию (или хотя бы держать в голове возможность проблем из-за
   // отключения).
-  std::cin.tie(nullptr);
-  std::cout.tie(nullptr);
+  //   std::cin.tie(nullptr);
+  //   std::cout.tie(nullptr);
   // Перенаправление потоков cin/cout с помощью freopen
   // freopen("input.txt", "r", stdin);
   // freopen("output.txt", "w", stdout);

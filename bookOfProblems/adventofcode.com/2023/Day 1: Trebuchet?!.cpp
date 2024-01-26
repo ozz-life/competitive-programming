@@ -354,78 +354,82 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-struct Customer {
-  int id, money;
-};
+// Part1
+// void solve() {
+//   std::string line;
+//   int totalSum = 0;
 
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
+//   while (std::getline(std::cin, line)) {
+//     auto firstDigit = std::find_if(line.begin(), line.end(), [](char ch) {
+//       return std::isdigit(static_cast<unsigned char>(ch));
+//     });
+//     auto lastDigit = std::find_if(line.rbegin(), line.rend(), [](char ch) {
+//       return std::isdigit(static_cast<unsigned char>(ch));
+//     });
+
+//     std::string concatenatedString =
+//         std::to_string(*firstDigit - '0') + std::to_string(*lastDigit - '0');
+
+//     totalSum += std::stoi(concatenatedString);
+//   }
+
+//   std::cout << "Total sum: " << totalSum << std::endl;
+// }
+
+void part1() {
+  int answ{};
+  std::string s;
+  while (std::cin >> s) {
+    int fi = 0, se = isz(s) - 1;
+    while (fi < isz(s) && !std::isdigit(s[fi]))
+      fi++;
+    while (se >= 0 && !std::isdigit(s[se]))
+      se--;
+    assert(fi < isz(s) && std::isdigit(s[fi]));
+    assert(se >= 0 && std::isdigit(s[se]));
+    answ += (s[fi] - '0') * 10 + (s[se] - '0');
+  }
+  std::cout << answ << std::endl;
 }
 
-// Зная <, set сможет вывести и >, !=, =, <=, >=
+// Part2
 
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
-  }
-};
-
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
-  }
-};
-
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
-  }
-  os << "}";
-  return os;
+bool issubstr(const std::string &where, int pos, const std::string &what) {
+  return pos + isz(what) <= isz(where) && where.substr(pos, isz(what)) == what;
 }
 
+int part2() {
+  std::vector<std::string> digits = {"zero", "one", "two",   "three", "four",
+                                     "five", "six", "seven", "eight", "nine"};
+  std::vector<std::string> d = {"0", "1", "2", "3", "4",
+                                "5", "6", "7", "8", "9"};
 
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
-}
+  int answ{};
+  std::string s;
 
-void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
+  auto isdigit = [&](int pos) -> int {
+    for (auto con : {&d, &digits})
+      for (int index = 0; auto t : *con) {
+        if (issubstr(s, pos, t))
+          return index;
+        index++;
+      }
+    return 0;
+  };
 
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    }
+  while (std::cin >> s) {
+    int fi = 0, se = isz(s) - 1;
+    while (fi < isz(s) && !isdigit(fi))
+      fi++;
+    while (se >= 0 && !isdigit(se))
+      se--;
+
+    answ += isdigit(fi) * 10 + isdigit(se);
   }
+  return answ;
 }
+
+void solve() { cout << part2() << endl; }
 
 /*
  * Main

@@ -20,7 +20,10 @@ As your shadow, unshakable. ― Gautama Buddha
 
 */
 
+#include <algorithm>
 #include <bits/stdc++.h>
+#include <cstdint>
+#include <limits>
 using namespace std;
 using namespace std::chrono;
 
@@ -268,6 +271,16 @@ std::vector<int64_t> z_function(std::string s) {
   return z;
 }
 
+std::string removeLeadingZeros(const std::string &s) {
+  auto it = s.begin();
+
+  while (it != s.end() && *it == '0') {
+    ++it;
+  }
+
+  return std::string(it, s.end());
+}
+
 /*
  * Debug
  ******************************************************************************/
@@ -354,77 +367,35 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-struct Customer {
-  int id, money;
-};
+// Заметим, что если существует такая тройка ai, aj и ak, что ai < aj < ak,
+// тогда |ak - ai| > |aj - ai| и |ak - ai| > |ak - aj|.
 
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
-}
+// Следовательно, можно отсортировать массив и проверять только соседние числа.
+// Таких пар ровно n - 1. Осталось только найти расстояние между числами в
+// минимальной паре и посчитать количество пар с таким же расстоянием.
 
-// Зная <, set сможет вывести и >, !=, =, <=, >=
-
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
-  }
-};
-
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
-  }
-};
-
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
-  }
-  os << "}";
-  return os;
-}
-
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
-}
+// Асимптотика решения:
 
 void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
+  int n;
+  cin >> n;
+  std::vector<int> a(n);
+  cin >> a;
 
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
+  std::stable_sort(a.begin(), a.end());
+
+  int diff = std::numeric_limits<int64_t>::max();
+  int count = 0;
+  for (int i = 1; i < n; ++i) {
+    if (a[i] - a[i - 1] < diff) {
+        diff = a[i] - a[i - 1];
+        count = 0;
+    } if (a[i] - a[i - 1] == diff) {
+        ++count;
     }
   }
+
+  cout << diff << " " << count;
 }
 
 /*

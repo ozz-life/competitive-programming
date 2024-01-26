@@ -268,6 +268,16 @@ std::vector<int64_t> z_function(std::string s) {
   return z;
 }
 
+std::string removeLeadingZeros(const std::string &s) {
+    auto it = s.begin();
+
+    while (it != s.end() && *it == '0') {
+        ++it;
+    }
+
+    return std::string(it, s.end());
+}
+
 /*
  * Debug
  ******************************************************************************/

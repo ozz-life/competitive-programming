@@ -268,6 +268,16 @@ std::vector<int64_t> z_function(std::string s) {
   return z;
 }
 
+std::string removeLeadingZeros(const std::string &s) {
+  auto it = s.begin();
+
+  while (it != s.end() && *it == '0') {
+    ++it;
+  }
+
+  return std::string(it, s.end());
+}
+
 /*
  * Debug
  ******************************************************************************/
@@ -354,76 +364,72 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-struct Customer {
-  int id, money;
-};
+// Let's say we have this input data:
 
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
-}
+// 10 90
+// 4 1
 
-// Зная <, set сможет вывести и >, !=, =, <=, >=
+// This means that at 2 PM there is an apple on the tree at height of 90 cm, and
+// at 10 cm height sits the caterpillar. We know, that between 10 AM and 10 PM
+// caterpillar goes higher 4 cm/hour. When it's 10 PM caterpillar goes to sleep
+// and slips down 1 cm/hour, until it's 10 AM again. So we have the process:
 
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
-  }
-};
+// 2 PM => 10 PM - goes UP a cm/h
+// 10 PM => 10 AM - goes DOWN b cm/h
+// 10 AM => 10 PM - goes UP a cm/h
+// ...
+// 10 AM => 10 PM - goes UP && gets the apple (if he can)
 
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
-  }
-};
+// In our case caterpillars movements are:
 
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
-  }
-  os << "}";
-  return os;
-}
+// 10 => 42 (10 + 8h * 4 cm/h) - climbing (day 0)
+// 42 => 30 (42 - 12h * 1 cm/h) - sleeping
+// 30 => 78 (30 + 12h * 4 cm/h) - climbing (day 1)
+// 78 => 66 (78 - 12h * 1 cm/h) - sleeping
+// 66 => 90 (66 + 6h * 4 cm/h) - climbing (day 2) && got the apple
 
+// In the middle of the 2-nd day the caterpillar is high enough to reach the
+// apple, so the answer is 2.
 
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
-}
+// void solve() {
+//   int h1, h2;
+//   cin >> h1 >> h2; // h2 > h1
+//   int a, b;
+//   cin >> a >> b; // поднимается на a, сползает на b за час
+//                  // день в 10, заканчивается в 22
+//   // гусеница замечена в 14, уроки заканчиваются в 14
+//   // гусеница может залезть под землю
+
+//   int res = 0;
+//   h1 += a * 8;
+//   if (h1 >= h2) {
+//     cout << 0 << endl;
+//   } else if (b >= a) {
+//     cout << -1 << endl;
+//   } else {
+//     while (h1 < h2) {
+//       res++;
+//       h1 -= b * 12;
+//       h1 += a * 12;
+//     }
+//     cout << res << endl;
+//   }
+// }
 
 void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
+  int h1, h2;
+  std::cin >> h1 >> h2;
+  int a, b;
+  std::cin >> a >> b;
 
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    }
+  if (h1 + 8 * a >= h2) {
+    std::cout << 0 << std::endl;
+  } else if (a > b) {
+    int num = h2 - h1 - 8 * a;
+    int day = 12 * (a - b);
+    std::cout << (num + day - 1) / day << std::endl;
+  } else {
+    std::cout << -1 << std::endl;
   }
 }
 

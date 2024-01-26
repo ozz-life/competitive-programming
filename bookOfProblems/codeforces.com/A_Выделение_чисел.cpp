@@ -354,77 +354,46 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-struct Customer {
-  int id, money;
-};
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
-}
-
-// Зная <, set сможет вывести и >, !=, =, <=, >=
-
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
+bool isPositiveInteger(const std::string &s) {
+  if (s.empty()) {
+    return false;
   }
-};
-
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
+  if (s[0] == '0' && s.size() > 1) {
+    return false;
   }
-};
-
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
+  for (char ch : s) {
+    if (!std::isdigit(ch)) {
+      return false;
+    }
   }
-  os << "}";
-  return os;
-}
-
-
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
+  return true;
 }
 
 void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
+  string s;
+  cin >> s;
+  s += ",";
+  int now = 0;
+  string a = "\"", b = "\"";
+  while (now < s.size()) {
+    string t;
+    while (now < s.size() && s[now] != ',' && s[now] != ';')
+      t.push_back(s[now]), now++;
+    now++;
 
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
+    if (isPositiveInteger(t)) {
+      a += t + ",";
     } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
+      b += t + ",";
     }
   }
+  a.pop_back(), b.pop_back();
+  a += "\"", b += "\"";
+  if (a == "\"")
+    a = "-";
+  if (b == "\"")
+    b = "-";
+  cout << a << endl << b << endl;
 }
 
 /*

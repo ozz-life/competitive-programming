@@ -1,15 +1,14 @@
 /*
-            ▒█████  ▒███████▒▒███████▒      ██▓     ██▓  █████▒▓█████
-           ▒██▒  ██▒▒ ▒ ▒ ▄▀░▒ ▒ ▒ ▄▀░     ▓██▒    ▓██▒▓██   ▒ ▓█   ▀
-           ▒██░  ██▒░ ▒ ▄▀▒░ ░ ▒ ▄▀▒░      ▒██░    ▒██▒▒████ ░ ▒███
-           ▒██   ██░  ▄▀▒   ░  ▄▀▒   ░     ▒██░    ░██░░▓█▒  ░ ▒▓█  ▄
-           ░ ████▓▒░▒███████▒▒███████▒ ██▓ ░██████▒░██░░▒█░    ░▒████▒
-           ░ ▒░▒░▒░ ░▒▒ ▓░▒░▒░▒▒ ▓░▒░▒ ▒▓▒ ░ ▒░▓  ░░▓   ▒ ░    ░░ ▒░ ░
-             ░ ▒ ▒░ ░░▒ ▒ ░ ▒░░▒ ▒ ░ ▒ ░▒  ░ ░ ▒  ░ ▒ ░ ░       ░ ░  ░
-           ░ ░ ░ ▒  ░ ░ ░ ░ ░░ ░ ░ ░ ░ ░     ░ ░    ▒ ░ ░ ░       ░
-               ░ ░    ░ ░      ░ ░      ░      ░  ░ ░             ░  ░
-                    ░        ░          ░
-          Author: Stanislav "Oz" Ozeransky | Site: https:://ozz.life/
+                        ▒█████  ▒███████▒▒███████▒      ██▓     ██▓ █████▒▓█████
+                   ▒██▒  ██▒▒ ▒ ▒ ▄▀░▒ ▒ ▒ ▄▀░     ▓██▒    ▓██▒▓██   ▒ ▓█   ▀
+                   ▒██░  ██▒░ ▒ ▄▀▒░ ░ ▒ ▄▀▒░      ▒██░    ▒██▒▒████ ░ ▒███
+                   ▒██   ██░  ▄▀▒   ░  ▄▀▒   ░     ▒██░    ░██░░▓█▒  ░ ▒▓█  ▄
+                   ░ ████▓▒░▒███████▒▒███████▒ ██▓ ░██████▒░██░░▒█░    ░▒████▒
+                   ░ ▒░▒░▒░ ░▒▒ ▓░▒░▒░▒▒ ▓░▒░▒ ▒▓▒ ░ ▒░▓  ░░▓   ▒ ░    ░░ ▒░ ░
+                         ░ ▒ ▒░ ░░▒ ▒ ░ ▒░░▒ ▒ ░ ▒ ░▒  ░ ░ ▒  ░ ▒ ░ ░       ░ ░
+░ ░ ░ ░ ▒  ░ ░ ░ ░ ░░ ░ ░ ░ ░ ░     ░ ░    ▒ ░ ░ ░       ░ ░ ░    ░ ░      ░ ░
+░      ░  ░ ░             ░  ░ ░        ░          ░ Author: Stanislav "Oz"
+Ozeransky | Site: https:://ozz.life/
 
 We are what we think.
 All that we are arises with our thoughts.
@@ -268,6 +267,16 @@ std::vector<int64_t> z_function(std::string s) {
   return z;
 }
 
+std::string removeLeadingZeros(const std::string &s) {
+  auto it = s.begin();
+
+  while (it != s.end() && *it == '0') {
+    ++it;
+  }
+
+  return std::string(it, s.end());
+}
+
 /*
  * Debug
  ******************************************************************************/
@@ -353,78 +362,82 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
 /*
  * Solve
  ******************************************************************************/
+class BinarySearchTree {
+private:
+  struct Node {
+    int data;
+    Node *left;
+    Node *right;
 
-struct Customer {
-  int id, money;
-};
+    Node(int value) : data(value), left(nullptr), right(nullptr) {}
+  };
 
-template <typename... Pack>
-ostream &operator<<(ostream &os, const Customer &customer) {
-  os << "{id: " << customer.id << ", money: " << customer.money << "}";
-  return os;
-}
+  Node *root;
 
-// Зная <, set сможет вывести и >, !=, =, <=, >=
+  Node *insert(Node *root, int value) {
+    if (root == nullptr) {
+      return new Node(value);
+    }
 
-struct LessById {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.id < rhs.id || (lhs.id == rhs.id && lhs.money < rhs.money);
+    if (value < root->data) {
+      root->left = insert(root->left, value);
+    } else if (value > root->data) {
+      root->right = insert(root->right, value);
+    }
+
+    return root;
   }
-};
 
-struct LessByMoney {
-  bool operator()(const Customer &lhs, const Customer &rhs) const {
-    return lhs.money > rhs.money || (lhs.money == rhs.money && lhs.id < rhs.id);
+  Node *findMin(Node *root) {
+    while (root->left != nullptr) {
+      root = root->left;
+    }
+    return root;
   }
-};
 
-template <typename T> ostream &print_range(ostream &os, T begin, T end) {
-  os << "{";
-  for (auto it = begin; it != end; ++it) {
-    if (it != begin)
-      os << ",";
-    os << *it;
+  Node *findMax(Node *root) {
+    while (root->right != nullptr) {
+      root = root->right;
+    }
+    return root;
   }
-  os << "}";
-  return os;
-}
 
+public:
+  BinarySearchTree() : root(nullptr) {}
 
-template <typename... Pack>
-ostream &operator<<(ostream &os, const set<Pack...> &s) {
-  return print_range(os, s.begin(), s.end());
-}
+  void insert(int value) { root = insert(root, value); }
+
+  int findMin() {
+    if (root == nullptr) {
+      std::cerr << "Tree is empty.\n";
+      return -1;
+    }
+    return findMin(root)->data;
+  }
+
+  int findMax() {
+    if (root == nullptr) {
+      std::cerr << "Tree is empty.\n";
+      return -1;
+    }
+    return findMax(root)->data;
+  }
+
+  ~BinarySearchTree() {}
+};
 
 void solve() {
-  int q, id = 1;
-  cin >> q;
-  set<Customer, LessById> setById;
-  set<Customer, LessByMoney> setByMoney;
+  int n;
+  cin >> n;
+  BinarySearchTree bst;
 
-  while (q--) {
-    cout << string(20, '-') << endl;
-    int t;
-    cin >> t;
-    cout << setById << endl;
-    cout << setByMoney << endl;
-    if (t == 1) {
-      int money;
-      cin >> money;
-      setById.insert(Customer{id, money});
-      setByMoney.insert(Customer{id, money});
-      id++;
-    } else if (t == 2) {
-      Customer curr = *setById.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    } else {
-      Customer curr = *setByMoney.begin();
-      cout << curr.id << ' ';
-      setById.erase(curr);
-      setByMoney.erase(curr);
-    }
+  while (n--) {
+    int i;
+    cin >> i;
+    bst.insert(i);
   }
+
+  std::cout << bst.findMin() << std::endl;
 }
 
 /*
