@@ -28,6 +28,4 @@ function readLine() {
 
 function main() {
     let [k1, m, k2, p2, n2] = readLine().split(" ").map(Number)
-    console.log(k1)
-
 }

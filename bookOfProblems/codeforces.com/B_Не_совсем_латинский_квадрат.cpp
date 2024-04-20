@@ -21,7 +21,6 @@ As your shadow, unshakable. ― Gautama Buddha
 */
 
 #include <bits/stdc++.h>
-#include <iterator>
 using namespace std;
 using namespace std::chrono;
 
@@ -312,20 +311,6 @@ template <size_t N> string to_string(bitset<N> v) {
   return res;
 }
 
-// template <typename A> string to_string(A v) {
-//   bool first = true;
-//   string res = "{";
-//   for (const auto &x : v) {
-//     if (!first) {
-//       res += ", ";
-//     }
-//     first = false;
-//     res += to_string(x);
-//   }
-//   res += "}";
-//   return res;
-// }
-
 template <typename A> string to_string(A v) {
   bool first = true;
   string res = "{";
@@ -370,47 +355,52 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  ******************************************************************************/
 
 void solve() {
-  std::vector<std::vector<char>> matrix(3, std::vector<char>(3));
-  for (int i = 0; i < 3; ++i) {
-    for (int j = 0; j < 3; ++j) {
-      cin >> matrix[i][j];
+  // Ввод матрицы
+  int rows = 3, cols = 3;
+  std::vector<std::vector<char>> matrix(rows, std::vector<char>(cols));
+  for (int x = 0; x < rows; ++x) {
+    for (int y = 0; y < cols; ++y) {
+      std::cin >> matrix[x][y];
     }
   }
 
+  // Вывод матрицы
+  for (int x = 0; x < rows; ++x) {
+    for (int y = 0; y < cols; ++y) {
+      cout << matrix[x][y] << ' ';
+    }
+    cout << '\n';
+  }
+
+  // Поиск по матрице
   bool found = false;
-  int row = -1, col = -1;
-  for (int i = 0; i < 3 and !found; ++i) {
-    for (int j = 0; j < 3 and !found; ++j) {
-      if (matrix[i][j] == '?') {
+  int xCoord = -1, yCoord = -1;
+  for (int x = 0; x < rows and !found; ++x) {
+    for (int y = 0; y < cols and !found; ++y) {
+      if (matrix[x][y] == '?') {
+        xCoord = x;
+        yCoord = y;
         found = true;
-        row = i;
-        col = j;
+        break;
       }
     }
   }
+  
+  std::vector<char> letters(26, false);
 
-  std::vector<bool> letters(26, false);
-  for (int j = 0; j < 3; ++j) {
-    if (matrix[row][j] != '?') {
-      letters[matrix[row][j] - 'A'] = true;
-    }
-  }
+//   int targetRow = 1;
+//   for (int y = 0; y < cols; ++y) {
+//     char currentElement = matrix[targetRow][y];
+//     cout << currentElement << " ";
+//   }
 
-  for (int i = 0; i < 3; ++i) {
-    if (matrix[i][col] != '?') {
-      letters[matrix[i][col] - 'A'] = true;
-    }
-  }
+//   int targetCol = 2;
+//   for (int x = 0; x < rows; ++x) {
+//     char currentElement = matrix[x][targetCol];
+//     cout << currentElement << " ";
+//   }
 
-  char missing_letter = ' ';
-  for (int i = 0; i < 26; ++i) {
-    if (!letters[i]) {
-      missing_letter = static_cast<char>('A' + i);
-      break;
-    }
-  }
-
-  cout << missing_letter << "\n";
+cout << endl << endl;
 }
 
 /*

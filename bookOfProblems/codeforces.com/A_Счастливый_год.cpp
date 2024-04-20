@@ -32,9 +32,10 @@ typedef vector<int64_t> vi;
 typedef pair<int64_t, int64_t> pi;
 
 #define isz(x) int((x).size())
-#define FOR(s, e, i) for (int64_t i = s; i < e; ++i)
-#define FORE(s, e, i) for (int64_t i = s; i <= e; ++i)
-#define ROF(e, s, i) for (int64_t i = e; i >= s; --i)
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+#define rep1(i, n) for (int i = 1; i < (n); ++i)
+#define rep1n(i, n) for (int i = 1; i <= (n); ++i)
+#define repr(i, n) for (int i = (n)-1; i >= 0; --i)
 
 #define inp(x)                                                                 \
   for (auto &i : x)                                                            \
@@ -46,8 +47,8 @@ typedef pair<int64_t, int64_t> pi;
   for (auto [i, j] : x)                                                        \
   cout << i << " " << j
 
-#define all(x) (x).begin(), (x).end()
-#define rall(x) (x).rbegin(), (x).rend()
+#define all(x) begin(x), end(x)
+#define rall(x) rbegin(x), rend(x)
 #define mine(v) *std::min_element(all(v));
 #define maxe(v) *std::max_element(all(v));
 
@@ -58,6 +59,38 @@ const char ENDL = '\n';
 
 #define pb push_back
 #define mp make_pair
+
+/*
+ * ASCII
+ ******************************************************************************/
+
+constexpr bool is_ascii_letter(char c) noexcept {
+  return ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z');
+}
+
+constexpr bool is_ascii_number(char c) noexcept { return c >= '0' && c <= '9'; }
+
+constexpr bool is_ascii_lowercase(char c) noexcept {
+  return c >= 'a' && c <= 'z';
+}
+
+constexpr bool is_ascii_uppercase(char c) noexcept {
+  return c >= 'A' && c <= 'Z';
+}
+
+/*
+ * Math
+ ******************************************************************************/
+
+inline bool isEven(const int &x) { return (x & 1) == 0; }
+inline bool isOdd(const int &x) { return x & 1; }
+
+int integerDivisionCeil(int numerator, int denominator) {
+  if (numerator == 0) {
+    return 0;
+  }
+  return (numerator - 1) / denominator + 1;
+}
 
 /*
  * Scanning/printing the whole vector in a single std::cin/std::cout
@@ -216,9 +249,9 @@ vector<int64_t> manacher_even(string s) {
  * @return z - Вектор целых чисел, содержащий значения Z-функции для каждой
  * позиции строки s.
  */
-vector<int64_t> z_function(string s) {
+std::vector<int64_t> z_function(std::string s) {
   int64_t n = s.size();
-  vector<int64_t> z(n);
+  std::vector<int64_t> z(n);
   int64_t l = 0, r = 0;
   for (int64_t i = 1; i < n; i++) {
     if (i < r) {
@@ -235,28 +268,122 @@ vector<int64_t> z_function(string s) {
   return z;
 }
 
+std::string removeLeadingZeros(const std::string &s) {
+  auto it = s.begin();
+
+  while (it != s.end() && *it == '0') {
+    ++it;
+  }
+
+  return std::string(it, s.end());
+}
+
+/*
+ * Debug
+ ******************************************************************************/
+
+#define watch(x) cout << #x << " = " << (x) << endl;
+#define d(x) cout << #x << " == " << (x) << endl;
+
+template <typename A, typename B> string to_string(pair<A, B> p);
+
+template <typename A, typename B, typename C>
+string to_string(tuple<A, B, C> p);
+
+template <typename A, typename B, typename C, typename D>
+string to_string(tuple<A, B, C, D> p);
+
+string to_string(const string &s) { return '"' + s + '"'; }
+
+string to_string(const char *s) { return to_string((string)s); }
+
+string to_string(bool b) { return (b ? "true" : "false"); }
+
+string to_string(vector<bool> v) {
+  bool first = true;
+  string res = "{";
+  for (int i = 0; i < static_cast<int>(v.size()); i++) {
+    if (!first) {
+      res += ", ";
+    }
+    first = false;
+    res += to_string(v[i]);
+  }
+  res += "}";
+  return res;
+}
+
+template <size_t N> string to_string(bitset<N> v) {
+  string res = "";
+  for (size_t i = 0; i < N; i++) {
+    res += static_cast<char>('0' + v[i]);
+  }
+  return res;
+}
+
+template <typename A> string to_string(A v) {
+  bool first = true;
+  string res = "{";
+  for (const auto &x : v) {
+    if (!first) {
+      res += ", ";
+    }
+    first = false;
+    res += to_string(x);
+  }
+  res += "}";
+  return res;
+}
+
+template <typename A, typename B> string to_string(pair<A, B> p) {
+  return "(" + to_string(p.first) + ", " + to_string(p.second) + ")";
+}
+
+template <typename A, typename B, typename C>
+string to_string(tuple<A, B, C> p) {
+  return "(" + to_string(get<0>(p)) + ", " + to_string(get<1>(p)) + ", " +
+         to_string(get<2>(p)) + ")";
+}
+
+template <typename A, typename B, typename C, typename D>
+string to_string(tuple<A, B, C, D> p) {
+  return "(" + to_string(get<0>(p)) + ", " + to_string(get<1>(p)) + ", " +
+         to_string(get<2>(p)) + ", " + to_string(get<3>(p)) + ")";
+}
+
+void debug_out() { cerr << endl; }
+
+template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
+  cerr << " " << to_string(H);
+  debug_out(T...);
+}
+
+#define debug(...) cerr << "[" << #__VA_ARGS__ << "]:", debug_out(__VA_ARGS__)
+
 /*
  * Solve
  ******************************************************************************/
 
-int nextLuckYear(int n) {
-  int best = 9'000'000'000'000'000'000;
-  for (int pos = 0; pos <= 9; pos++) {
-    for (char digit = '1'; digit <= '9'; digit++) {
-      std::string number(10, '0');
-      number[pos] = digit;
-      int64_t x = stoll(number);
-      if (x > n && best - n > x - n) best = x;
+void solve() {
+  std::vector<int> a;
+
+  for (int x = 1; x <= 9; x++) {
+    int y = x;
+    for (int i = 0; i < 18; ++i) {
+      a.pb(y);
+      y *= 10;
     }
   }
-  return best - n;
-}
 
-void solve() {
+  sort(a.begin(), a.end());
+
+  //cout << a;
   int n;
   cin >> n;
 
-  cout << nextLuckYear(n);
+  int y = *upper_bound(a.begin(), a.end(), n);
+
+  cout << y - n << endl;
 }
 
 /*

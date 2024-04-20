@@ -278,6 +278,16 @@ std::string removeLeadingZeros(const std::string &s) {
     return std::string(it, s.end());
 }
 
+std::string addLeadingZeros(std::string &s, int64_t n) {
+  std::string result;
+  for (int i = 0; i < n; ++i) {
+    result += '0';
+  }
+
+  result += s;
+  return result;
+}
+
 /*
  * Debug
  ******************************************************************************/

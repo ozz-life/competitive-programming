@@ -1,14 +1,15 @@
 /*
-                        ▒█████  ▒███████▒▒███████▒      ██▓     ██▓ █████▒▓█████
-                   ▒██▒  ██▒▒ ▒ ▒ ▄▀░▒ ▒ ▒ ▄▀░     ▓██▒    ▓██▒▓██   ▒ ▓█   ▀
-                   ▒██░  ██▒░ ▒ ▄▀▒░ ░ ▒ ▄▀▒░      ▒██░    ▒██▒▒████ ░ ▒███
-                   ▒██   ██░  ▄▀▒   ░  ▄▀▒   ░     ▒██░    ░██░░▓█▒  ░ ▒▓█  ▄
-                   ░ ████▓▒░▒███████▒▒███████▒ ██▓ ░██████▒░██░░▒█░    ░▒████▒
-                   ░ ▒░▒░▒░ ░▒▒ ▓░▒░▒░▒▒ ▓░▒░▒ ▒▓▒ ░ ▒░▓  ░░▓   ▒ ░    ░░ ▒░ ░
-                         ░ ▒ ▒░ ░░▒ ▒ ░ ▒░░▒ ▒ ░ ▒ ░▒  ░ ░ ▒  ░ ▒ ░ ░       ░ ░
-░ ░ ░ ░ ▒  ░ ░ ░ ░ ░░ ░ ░ ░ ░ ░     ░ ░    ▒ ░ ░ ░       ░ ░ ░    ░ ░      ░ ░
-░      ░  ░ ░             ░  ░ ░        ░          ░ Author: Stanislav "Oz"
-Ozeransky | Site: https:://ozz.life/
+            ▒█████  ▒███████▒▒███████▒      ██▓     ██▓  █████▒▓█████
+           ▒██▒  ██▒▒ ▒ ▒ ▄▀░▒ ▒ ▒ ▄▀░     ▓██▒    ▓██▒▓██   ▒ ▓█   ▀
+           ▒██░  ██▒░ ▒ ▄▀▒░ ░ ▒ ▄▀▒░      ▒██░    ▒██▒▒████ ░ ▒███
+           ▒██   ██░  ▄▀▒   ░  ▄▀▒   ░     ▒██░    ░██░░▓█▒  ░ ▒▓█  ▄
+           ░ ████▓▒░▒███████▒▒███████▒ ██▓ ░██████▒░██░░▒█░    ░▒████▒
+           ░ ▒░▒░▒░ ░▒▒ ▓░▒░▒░▒▒ ▓░▒░▒ ▒▓▒ ░ ▒░▓  ░░▓   ▒ ░    ░░ ▒░ ░
+             ░ ▒ ▒░ ░░▒ ▒ ░ ▒░░▒ ▒ ░ ▒ ░▒  ░ ░ ▒  ░ ▒ ░ ░       ░ ░  ░
+           ░ ░ ░ ▒  ░ ░ ░ ░ ░░ ░ ░ ░ ░ ░     ░ ░    ▒ ░ ░ ░       ░
+               ░ ░    ░ ░      ░ ░      ░      ░  ░ ░             ░  ░
+                    ░        ░          ░
+          Author: Stanislav "Oz" Ozeransky | Site: https:://ozz.life/
 
 We are what we think.
 All that we are arises with our thoughts.
@@ -111,35 +112,35 @@ template <typename T> ostream &operator<<(ostream &out, vector<T> &a) {
  * Graph
  ******************************************************************************/
 
-// class Graph {
-// public:
-//   Graph(int64_t vertexCount) : adjacencyList(vertexCount) {}
+class Graph {
+public:
+  Graph(int64_t vertexCount) : adjacencyList(vertexCount) {}
 
-//   void addEdge(int64_t vertex1, int64_t vertex2, bool isDirected) {
-//     adjacencyList[vertex1].push_back(vertex2);
-//     if (!isDirected) {
-//       adjacencyList[vertex2].push_back(vertex1);
-//     }
-//   }
+  void addEdge(int64_t vertex1, int64_t vertex2, bool isDirected) {
+    adjacencyList[vertex1].push_back(vertex2);
+    if (!isDirected) {
+      adjacencyList[vertex2].push_back(vertex1);
+    }
+  }
 
-//   void printGraph() const {
-//     int64_t vertexCount = adjacencyList.size();
-//     for (int64_t i = 0; i < vertexCount; ++i) {
-//       std::cout << "Vertex " << i + 1 << ": ";
-//       for (int64_t neighbor : adjacencyList[i]) {
-//         std::cout << neighbor + 1 << " ";
-//       }
-//       std::cout << std::endl;
-//     }
-//   }
+  void printGraph() const {
+    int64_t vertexCount = adjacencyList.size();
+    for (int64_t i = 0; i < vertexCount; ++i) {
+      std::cout << "Vertex " << i + 1 << ": ";
+      for (int64_t neighbor : adjacencyList[i]) {
+        std::cout << neighbor + 1 << " ";
+      }
+      std::cout << std::endl;
+    }
+  }
 
-//   int64_t findDegree(int64_t vertex) const {
-//     return adjacencyList[vertex].size();
-//   }
+  int64_t findDegree(int64_t vertex) const {
+    return adjacencyList[vertex].size();
+  }
 
-// private:
-//   std::vector<std::vector<int64_t>> adjacencyList;
-// };
+private:
+  std::vector<std::vector<int64_t>> adjacencyList;
+};
 
 /*
  * String
@@ -277,6 +278,16 @@ std::string removeLeadingZeros(const std::string &s) {
   return std::string(it, s.end());
 }
 
+std::string addLeadingZeros(std::string &s, int64_t n) {
+  std::string result;
+  for (int i = 0; i < n; ++i) {
+    result += '0';
+  }
+
+  result += s;
+  return result;
+}
+
 /*
  * Debug
  ******************************************************************************/
@@ -363,98 +374,8 @@ template <typename Head, typename... Tail> void debug_out(Head H, Tail... T) {
  * Solve
  ******************************************************************************/
 
-// class Graph {
-// public:
-//   void addEdge(int v, int w) {
-//     adjList[v].push_back(w);
-//     adjList[w].push_back(v);
-//   }
-//   const std::vector<int> &getAdjVertices(int v) const { return adjList.at(v);
-//   } int getNumVertices() const { return adjList.size(); } int
-//   countNodesDFS(int start) {
-//     std::set<int> visited;
-//     DFS(start, visited);
-//     return visited.size();
-//   }
-
-// private:
-//   std::map<int, std::vector<int>> adjList;
-//   void DFS(int v, std::set<int> &visited) {
-//     visited.insert(v);
-//     for (int neighbor : getAdjVertices(v)) {
-//       if (visited.find(neighbor) == visited.end()) {
-//         DFS(neighbor, visited);
-//       }
-//     }
-//   }
-// };
-
-class Graph {
-public:
-  void addEdge(int v, int w) {
-    adjList[v].push_back(w);
-    adjList[w].push_back(v);
-  }
-
-  const std::vector<int> &getAdjVertices(int v) const { return adjList.at(v); }
-
-  int getNumVertices() const { return adjList.size(); }
-
-  bool hasTriangle() {
-    for (int v = 1; v <= getNumVertices(); ++v) {
-      std::set<int> visited;
-      DFS(v, visited);
-
-      if (visited.size() == 3) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  int countConnectedComponents() {
-    int componentCount = 0;
-    std::set<int> visited;
-
-    for (int v = 1; v <= getNumVertices(); ++v) {
-      if (visited.find(v) == visited.end()) {
-        componentCount++;
-        DFS(v, visited);
-      }
-    }
-
-    return componentCount;
-  }
-
-private:
-  std::map<int, std::vector<int>> adjList;
-
-  void DFS(int v, std::set<int> &visited) {
-    visited.insert(v);
-    for (int neighbor : getAdjVertices(v)) {
-      if (visited.find(neighbor) == visited.end()) {
-        DFS(neighbor, visited);
-      }
-    }
-  }
-};
-
 void solve() {
-  int edgeCount;
-  cin >> edgeCount;
 
-  Graph g;
-
-  for (int i = 0; i < edgeCount; ++i) {
-    int a, b;
-    cin >> a >> b;
-    g.addEdge(a, b);
-  }
-
-  int componentCount = g.countConnectedComponents();
-
-  cout << componentCount;
 }
 
 /*

@@ -56,7 +56,7 @@ void recursive(int idx, int balance) {
 }
 
 int main() {
-  n = 5; // Задайте значение n
+  n = 8; // Задайте значение n
   s.assign(2 * n, ' ');
 
   recursive(0, 0);
