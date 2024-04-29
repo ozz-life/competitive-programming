@@ -1,4 +1,22 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# Структура каталогов:
+#
+# ./b/main.go
+# ./b/tests/
+#  |----01
+#  |----01.a
+#  |----...
+#  |----08
+#  |----08.a
+# ./c/main.go
+# ./c/tests/
+#  |----01
+#  |----01.a
+#  |----...
+#
+# After that run:
+#  ./run_tests.sh ./b/main.go
 
 COLOR_BLACK=0
 COLOR_RED=1
@@ -8,7 +26,7 @@ COLOR_GREY=8
 
 reset_color="$(tput sgr0)"
 
-source_file=${1:-a.go}
+source_file=${1:-main.go}
 
 print_error() {
   local error_text="$1"
@@ -35,7 +53,8 @@ print_time () {
   fi
 
   local color_time="$(tput setaf $color)"
-  printf "${color_time}%.0fms${reset_color}" "$runtime"
+  local int_runtime=$(echo "$runtime * 1000" | awk '{print int($1)}')
+  printf "${color_time}%dms${reset_color}" "$int_runtime"
 }
 
 clear_line () {
@@ -49,7 +68,9 @@ if [ ! -f "$source_file" ]; then
   exit 1
 fi
 
-tests_dir="$(dirname $(readlink -f $source_file))/tests"
+source_dir=$(dirname "$source_file")
+source_filename=$(basename "$source_file")
+tests_dir="$source_dir/tests"
 
 if [ ! -d "$tests_dir" ]; then
   print_error "Tests directory does not exist"
@@ -63,10 +84,9 @@ if ! which dos2unix &> /dev/null; then
   exit 1
 fi
 
-
-for test_input in "$tests_dir"/*
+for test_input in $(ls "$tests_dir" | sort -n)
 do
-  if [[ "$test_input" =~ ^"$tests_dir"/([0-9]+)$ ]]; then
+  if [[ "$test_input" =~ ^([0-9]+)$ ]]; then
     test_num="${BASH_REMATCH[1]}"
     test_output="${tests_dir}/${test_num}.a"
     test_name="Test $test_num"
@@ -74,7 +94,7 @@ do
     echo "$(highlight "RUNS" $COLOR_YELLOW) $test_name"
 
     start_time=$(date +%s.%N)
-    output=$(go run $source_file < "$test_input" | dos2unix)
+    output=$(go run "$source_file" < "$tests_dir/$test_input" | dos2unix)
     end_time=$(date +%s.%N)
     runtime=$(echo "($end_time - $start_time) * 1000" | bc)
 

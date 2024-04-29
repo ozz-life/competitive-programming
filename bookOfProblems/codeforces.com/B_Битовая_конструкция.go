@@ -26,7 +26,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
+	"strconv"
 )
 
 /*
@@ -48,7 +48,7 @@ func gcd(a, b int) int {
 	for b > 0 {
 		a %= b
 		a, b = b, a
-		//swap(&a, &b)
+		//swap(&a, &b) 
 	}
 	return a
 }
@@ -177,89 +177,24 @@ func StringSumOfDigits(s string) int {
 }
 
 /*
- * Stack
- ******************************************************************************/
-type Stack struct {
-	items []string
-}
-
-func NewStack() *Stack {
-	return &Stack{}
-}
-
-func (s *Stack) Push(item string) {
-	s.items = append(s.items, item)
-	fmt.Println("ok")
-}
-
-func (s *Stack) Peek() {
-	if len(s.items) == 0 {
-		fmt.Println("error")
-	} else {
-		fmt.Println(s.items[len(s.items)-1])
-	}
-}
-
-func (s *Stack) Back() {
-	s.Peek()
-}
-
-func (s *Stack) Pop() {
-	if len(s.items) == 0 {
-		fmt.Println("error")
-	} else {
-		item := s.items[len(s.items)-1]
-		s.items = s.items[:len(s.items)-1]
-		fmt.Println(item)
-	}
-}
-
-func (s *Stack) Size() {
-	fmt.Println(len(s.items))
-}
-
-func (s *Stack) Clear() {
-	s.items = []string{}
-	fmt.Println("ok")
-}
-
-func (s *Stack) IsEmpty() bool {
-	return len(s.items) == 0
-}
-
-/*
  * Solve
  ******************************************************************************/
 
 func solve(in *bufio.Reader, out *bufio.Writer) {
-	stack := NewStack()
+	var n, k int // n <= 2 * 10^5
+	fmt.Fscan(in, &n, &k)
 
-	scanner := bufio.NewScanner(os.Stdin)
+	number := 47
+	binaryString := strconv.FormatInt(int64(number), 2)
 
-	for scanner.Scan() {
-		input := scanner.Text()
-		command := strings.Fields(input)
+	// Вывод двоичного представления
+	fmt.Printf("Число %d в двоичном представлении: %s\n", number, binaryString)
 
-		switch command[0] {
-		case "push":
-			stack.Push(command[1])
-		case "back":
-			stack.Back()
-		case "pop":
-			stack.Pop()
-		case "size":
-			stack.Size()
-		case "clear":
-			stack.Clear()
-		case "empty":
-			fmt.Println(stack.IsEmpty())
-		case "exit":
-			fmt.Println("bye")
-			return
-		default:
-			continue
-		}
-	}
+	// if n == 1 {
+	// 	fmt.Fprintln(out, k)
+	// } else {
+	// 	a := make([]int, n)
+	// }
 }
 
 /*
@@ -271,10 +206,10 @@ func main() {
 	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
 
-	// var count_test int
-	// fmt.Fscan(in, &count_test)
+	var count_test int
+	fmt.Fscan(in, &count_test)
 
-	var count_test int = 1
+	//var count_test int = 1
 	for i := 0; i < count_test; i++ {
 		solve(in, out)
 	}

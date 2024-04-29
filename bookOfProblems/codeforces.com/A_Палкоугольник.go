@@ -26,7 +26,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
 )
 
 /*
@@ -177,89 +176,28 @@ func StringSumOfDigits(s string) int {
 }
 
 /*
- * Stack
- ******************************************************************************/
-type Stack struct {
-	items []string
-}
-
-func NewStack() *Stack {
-	return &Stack{}
-}
-
-func (s *Stack) Push(item string) {
-	s.items = append(s.items, item)
-	fmt.Println("ok")
-}
-
-func (s *Stack) Peek() {
-	if len(s.items) == 0 {
-		fmt.Println("error")
-	} else {
-		fmt.Println(s.items[len(s.items)-1])
-	}
-}
-
-func (s *Stack) Back() {
-	s.Peek()
-}
-
-func (s *Stack) Pop() {
-	if len(s.items) == 0 {
-		fmt.Println("error")
-	} else {
-		item := s.items[len(s.items)-1]
-		s.items = s.items[:len(s.items)-1]
-		fmt.Println(item)
-	}
-}
-
-func (s *Stack) Size() {
-	fmt.Println(len(s.items))
-}
-
-func (s *Stack) Clear() {
-	s.items = []string{}
-	fmt.Println("ok")
-}
-
-func (s *Stack) IsEmpty() bool {
-	return len(s.items) == 0
-}
-
-/*
  * Solve
  ******************************************************************************/
 
 func solve(in *bufio.Reader, out *bufio.Writer) {
-	stack := NewStack()
-
-	scanner := bufio.NewScanner(os.Stdin)
-
-	for scanner.Scan() {
-		input := scanner.Text()
-		command := strings.Fields(input)
-
-		switch command[0] {
-		case "push":
-			stack.Push(command[1])
-		case "back":
-			stack.Back()
-		case "pop":
-			stack.Pop()
-		case "size":
-			stack.Size()
-		case "clear":
-			stack.Clear()
-		case "empty":
-			fmt.Println(stack.IsEmpty())
-		case "exit":
-			fmt.Println("bye")
-			return
-		default:
-			continue
-		}
+	var n int
+	fmt.Fscan(in, &n)
+	a := make([]int, n)
+	for i := range a {
+		fmt.Fscan(in, &a[i])
 	}
+
+	m := make(map[int]int, n)
+	for _, i := range a {
+		m[i]++
+	}
+
+	count := 0
+	for _, v := range m {
+		count += v / 3
+	}
+
+	fmt.Fprintln(out, count)
 }
 
 /*
@@ -271,10 +209,10 @@ func main() {
 	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
 
-	// var count_test int
-	// fmt.Fscan(in, &count_test)
+	var count_test int
+	fmt.Fscan(in, &count_test)
 
-	var count_test int = 1
+	//var count_test int = 1
 	for i := 0; i < count_test; i++ {
 		solve(in, out)
 	}

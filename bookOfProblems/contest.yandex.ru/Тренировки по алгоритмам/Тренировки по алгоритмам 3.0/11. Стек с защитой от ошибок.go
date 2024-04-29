@@ -179,20 +179,17 @@ func StringSumOfDigits(s string) int {
 /*
  * Stack
  ******************************************************************************/
+ 
 type Stack struct {
 	items []string
 }
 
-func NewStack() *Stack {
-	return &Stack{}
-}
-
-func (s *Stack) Push(item string) {
+func (s *Stack) push(item string) {
 	s.items = append(s.items, item)
 	fmt.Println("ok")
 }
 
-func (s *Stack) Peek() {
+func (s *Stack) back() {
 	if len(s.items) == 0 {
 		fmt.Println("error")
 	} else {
@@ -200,11 +197,7 @@ func (s *Stack) Peek() {
 	}
 }
 
-func (s *Stack) Back() {
-	s.Peek()
-}
-
-func (s *Stack) Pop() {
+func (s *Stack) pop() {
 	if len(s.items) == 0 {
 		fmt.Println("error")
 	} else {
@@ -214,17 +207,13 @@ func (s *Stack) Pop() {
 	}
 }
 
-func (s *Stack) Size() {
+func (s *Stack) size() {
 	fmt.Println(len(s.items))
 }
 
-func (s *Stack) Clear() {
+func (s *Stack) clear() {
 	s.items = []string{}
 	fmt.Println("ok")
-}
-
-func (s *Stack) IsEmpty() bool {
-	return len(s.items) == 0
 }
 
 /*
@@ -232,7 +221,7 @@ func (s *Stack) IsEmpty() bool {
  ******************************************************************************/
 
 func solve(in *bufio.Reader, out *bufio.Writer) {
-	stack := NewStack()
+	stack := Stack{}
 
 	scanner := bufio.NewScanner(os.Stdin)
 
@@ -242,17 +231,15 @@ func solve(in *bufio.Reader, out *bufio.Writer) {
 
 		switch command[0] {
 		case "push":
-			stack.Push(command[1])
+			stack.push(command[1])
 		case "back":
-			stack.Back()
+			stack.back()
 		case "pop":
-			stack.Pop()
+			stack.pop()
 		case "size":
-			stack.Size()
+			stack.size()
 		case "clear":
-			stack.Clear()
-		case "empty":
-			fmt.Println(stack.IsEmpty())
+			stack.clear()
 		case "exit":
 			fmt.Println("bye")
 			return
