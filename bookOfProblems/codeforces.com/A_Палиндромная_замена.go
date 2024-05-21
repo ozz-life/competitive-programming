@@ -26,7 +26,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"sort"
 )
 
 /*
@@ -182,41 +181,50 @@ func StringSumOfDigits(s string) int {
  * Solve
  ******************************************************************************/
 
-func merge(intervals [][]int) [][]int {
-	if len(intervals) == 0 {
-		return [][]int{}
-	}
+func check(x, y byte) bool {
+	delta := abs(int(x) - int(y))
+	return delta == 0 || delta == 2
+}
 
-	// Сортировка интервалов по начальным точкам
-	sort.Slice(intervals, func(i, j int) bool {
-		return intervals[i][0] < intervals[j][0]
-	})
+// func solve(in *bufio.Reader, out *bufio.Writer) {
+// 	var n int
+// 	var s string
+// 	fmt.Fscan(in, &n, &s)
 
-	// Инициализация ответа с первым интервалом
-	answer := [][]int{intervals[0]}
+// 	var ok bool = true
+// 	for i := 0; i < n / 2; i++ {
+// 		var k int = abs(int(s[i]) - int(s[n - i - 1]))
+// 		if k > 2 || k % 2 == 1 {
+// 			ok = false
+// 			break
+// 		}
+// 	}
 
-	// Объединение пересекающихся интервалов
-	for i := 1; i < len(intervals); i++ {
-		curr := intervals[i]
-		last := answer[len(answer)-1]
+// 	if ok {
+// 		fmt.Fprintln(out, "YES")
+// 	} else {
+// 		fmt.Fprintln(out, "NO")
+// 	}
+// }
 
-		// Если текущий интервал пересекается с последним в ответе, объединяем их
-		if curr[0] <= last[1] {
-			answer[len(answer)-1][1] = max(last[1], curr[1])
-		} else {
-			// Иначе, добавляем текущий интервал в ответ
-			answer = append(answer, curr)
+func solve(in *bufio.Reader, out *bufio.Writer) {
+	var n int
+	var s string
+	fmt.Fscan(in, &n, &s)
+
+	var ok bool = true
+	for i := 0; i < n/2; i++ {
+		ok = check(s[i], s[n-i-1])
+		if !ok {
+			break
 		}
 	}
 
-	return answer
-}
-
-func solve(in *bufio.Reader, out *bufio.Writer) {
-	test := [][]int{
-		{1, 3}, {2, 6}, {8, 10}, {15, 18},
+	if ok {
+		fmt.Fprintln(out, "YES")
+	} else {
+		fmt.Fprintln(out, "NO")
 	}
-	fmt.Fprint(out, merge(test))
 }
 
 /*
@@ -228,10 +236,10 @@ func main() {
 	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
 
-	// var count_test int
-	// fmt.Fscan(in, &count_test)
+	var count_test int
+	fmt.Fscan(in, &count_test)
 
-	var count_test int = 1
+	//var count_test int = 1
 	for i := 0; i < count_test; i++ {
 		solve(in, out)
 	}

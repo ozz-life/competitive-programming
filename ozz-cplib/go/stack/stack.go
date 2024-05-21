@@ -1,51 +1,54 @@
 package stack
 
-import "fmt"
-
+import "errors"
 type Stack struct {
-	items []string
+	items []interface{}
 }
 
 func New() *Stack {
 	return &Stack{}
 }
 
-func (s *Stack) Push(item string) {
-	s.items = append(s.items, item)
-	fmt.Println("ok")
+func NewStack() *Stack {
+	return &Stack{}
 }
 
-func (s *Stack) Peek() {
-	if len(s.items) == 0 {
-		fmt.Println("error")
-	} else {
-		fmt.Println(s.items[len(s.items)-1])
-	}
-}
-
-func (s *Stack) Back() {
-	s.Peek()
-}
-
-func (s *Stack) Pop() {
-	if len(s.items) == 0 {
-		fmt.Println("error")
-	} else {
-		item := s.items[len(s.items)-1]
-		s.items = s.items[:len(s.items)-1]
-		fmt.Println(item)
-	}
-}
-
-func (s *Stack) Size() {
-	fmt.Println(len(s.items))
+func (s *Stack) Back() (interface{}, error) {
+	return s.Peek()
 }
 
 func (s *Stack) Clear() {
-	s.items = []string{}
-	fmt.Println("ok")
+	s.items = []interface{}{}
 }
 
 func (s *Stack) IsEmpty() bool {
 	return len(s.items) == 0
+}
+
+func (s *Stack) Len() int {
+	return len(s.items)
+}
+
+func (s *Stack) Peek() (interface{}, error) {
+	if len(s.items) == 0 {
+		return nil, errors.New("stack is empty")
+	}
+	return s.items[len(s.items)-1], nil
+}
+
+func (s *Stack) Pop() (interface{}, error) {
+	if len(s.items) == 0 {
+		return nil, errors.New("stack is empty")
+	}
+	item := s.items[len(s.items)-1]
+	s.items = s.items[:len(s.items)-1]
+	return item, nil
+}
+
+func (s *Stack) Push(item interface{}) {
+	s.items = append(s.items, item)
+}
+
+func (s *Stack) Size() int {
+	return s.Len()
 }

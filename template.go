@@ -47,7 +47,7 @@ func gcd(a, b int) int {
 	for b > 0 {
 		a %= b
 		a, b = b, a
-		//swap(&a, &b) 
+		//swap(&a, &b)
 	}
 	return a
 }
@@ -62,13 +62,15 @@ func abs(x int) int {
 	}
 	return x
 }
-func min(a, b int) int {
+
+func min[T int | string](a, b T) T {
 	if b < a {
 		return b
 	}
 	return a
 }
-func max(a, b int) int {
+
+func max[T int | string](a, b T) T {
 	if b > a {
 		return b
 	}

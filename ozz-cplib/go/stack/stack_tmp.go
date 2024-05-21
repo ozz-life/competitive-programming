@@ -24,10 +24,18 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
-	"sort"
+	"strings"
 )
+
+/*
+ * Custom Constraint
+ ******************************************************************************/
+type Constraint interface {
+	~int | ~string
+}
 
 /*
  * Common
@@ -63,15 +71,13 @@ func abs(x int) int {
 	}
 	return x
 }
-
-func min[T int | string](a, b T) T {
+func min[T Constraint](a, b T) T {
 	if b < a {
 		return b
 	}
 	return a
 }
-
-func max[T int | string](a, b T) T {
+func max(a, b int) int {
 	if b > a {
 		return b
 	}
@@ -179,44 +185,101 @@ func StringSumOfDigits(s string) int {
 }
 
 /*
+ * Stack
+ ******************************************************************************/
+
+type Stack struct {
+	items []interface{}
+}
+
+func NewStack() *Stack {
+	return &Stack{}
+}
+
+func (s *Stack) Back() (interface{}, error) {
+	return s.Peek()
+}
+
+func (s *Stack) Clear() {
+	s.items = []interface{}{}
+}
+
+func (s *Stack) IsEmpty() bool {
+	return len(s.items) == 0
+}
+
+func (s *Stack) Len() int {
+	return len(s.items)
+}
+
+func (s *Stack) Peek() (interface{}, error) {
+	if len(s.items) == 0 {
+		return nil, errors.New("stack is empty")
+	}
+	return s.items[len(s.items)-1], nil
+}
+
+func (s *Stack) Pop() (interface{}, error) {
+	if len(s.items) == 0 {
+		return nil, errors.New("stack is empty")
+	}
+	item := s.items[len(s.items)-1]
+	s.items = s.items[:len(s.items)-1]
+	return item, nil
+}
+
+func (s *Stack) Push(item interface{}) {
+	s.items = append(s.items, item)
+}
+
+func (s *Stack) Size() int {
+	return s.Len()
+}
+
+/*
  * Solve
  ******************************************************************************/
 
-func merge(intervals [][]int) [][]int {
-	if len(intervals) == 0 {
-		return [][]int{}
-	}
+func solve(in *bufio.Reader, out *bufio.Writer) {
+	stack := NewStack()
 
-	// Сортировка интервалов по начальным точкам
-	sort.Slice(intervals, func(i, j int) bool {
-		return intervals[i][0] < intervals[j][0]
-	})
+	scanner := bufio.NewScanner(os.Stdin)
 
-	// Инициализация ответа с первым интервалом
-	answer := [][]int{intervals[0]}
+	for scanner.Scan() {
+		input := scanner.Text()
+		command := strings.Fields(input)
 
-	// Объединение пересекающихся интервалов
-	for i := 1; i < len(intervals); i++ {
-		curr := intervals[i]
-		last := answer[len(answer)-1]
-
-		// Если текущий интервал пересекается с последним в ответе, объединяем их
-		if curr[0] <= last[1] {
-			answer[len(answer)-1][1] = max(last[1], curr[1])
-		} else {
-			// Иначе, добавляем текущий интервал в ответ
-			answer = append(answer, curr)
+		switch command[0] {
+		case "push":
+			stack.Push(command[1])
+		case "back":
+			value, err := stack.Peek()
+			if err != nil {
+				fmt.Println("Error:", err)
+			} else {
+				fmt.Println(value)
+			}
+		case "pop":
+			value, err := stack.Pop()
+			if err != nil {
+				fmt.Println("Error:", err)
+			} else {
+				fmt.Println(value)
+			}
+		case "size":
+			fmt.Println(stack.Size())
+		case "clear":
+			stack.Clear()
+			fmt.Println("ok")
+		case "empty":
+			fmt.Println(stack.IsEmpty())
+		case "exit":
+			fmt.Println("bye")
+			return
+		default:
+			continue
 		}
 	}
-
-	return answer
-}
-
-func solve(in *bufio.Reader, out *bufio.Writer) {
-	test := [][]int{
-		{1, 3}, {2, 6}, {8, 10}, {15, 18},
-	}
-	fmt.Fprint(out, merge(test))
 }
 
 /*

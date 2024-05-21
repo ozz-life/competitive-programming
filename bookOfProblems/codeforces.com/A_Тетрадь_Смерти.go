@@ -26,7 +26,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"sort"
 )
 
 /*
@@ -182,41 +181,19 @@ func StringSumOfDigits(s string) int {
  * Solve
  ******************************************************************************/
 
-func merge(intervals [][]int) [][]int {
-	if len(intervals) == 0 {
-		return [][]int{}
-	}
-
-	// Сортировка интервалов по начальным точкам
-	sort.Slice(intervals, func(i, j int) bool {
-		return intervals[i][0] < intervals[j][0]
-	})
-
-	// Инициализация ответа с первым интервалом
-	answer := [][]int{intervals[0]}
-
-	// Объединение пересекающихся интервалов
-	for i := 1; i < len(intervals); i++ {
-		curr := intervals[i]
-		last := answer[len(answer)-1]
-
-		// Если текущий интервал пересекается с последним в ответе, объединяем их
-		if curr[0] <= last[1] {
-			answer[len(answer)-1][1] = max(last[1], curr[1])
-		} else {
-			// Иначе, добавляем текущий интервал в ответ
-			answer = append(answer, curr)
-		}
-	}
-
-	return answer
-}
-
 func solve(in *bufio.Reader, out *bufio.Writer) {
-	test := [][]int{
-		{1, 3}, {2, 6}, {8, 10}, {15, 18},
+	// n - дни, m - количество номеров
+	var n, m int
+	fmt.Fscan(in, &n, &m)
+	a := make([]int, n)
+
+	current := 0
+	for i := range a {
+		fmt.Fscan(in, &a[i])
+		current += a[i]
+		fmt.Fprint(out, current/m, " ")
+		current %= m
 	}
-	fmt.Fprint(out, merge(test))
 }
 
 /*
