@@ -27,3 +27,24 @@ for(int windowEnd = 0; windowEnd < s.length(); windowEnd++){
 	res = max(res, j-i+1); // Update global max with the length of current valid substring
 }
 return res;
+
+
+///////////////////////
+
+
+func fn(arr []int) int {
+
+	ans, curr := 0, 0
+    for l, r := 0; r < len(nums); r++ {
+        // do logic here to add arr[right] to curr
+
+        for WINDOW_CONDITION_BROKEN {
+            // remove arr[left] from curr
+            l++
+        }
+
+        // update ans
+    }
+
+    return ans
+}

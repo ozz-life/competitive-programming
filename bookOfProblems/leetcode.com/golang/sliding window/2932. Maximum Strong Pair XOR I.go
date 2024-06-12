@@ -1,59 +1,43 @@
-func maximumStrongPairXor(nums []int) int {
-	maxXOR := 0
+// Test 1: 
+// [1,2,3,4,5]
+// 1 ^ 2 = 3
+// 2 ^ 3 = 1
+// 3 ^ 4 = 7
+// 4 ^ 5 = 1
 
-	for i := 0; i < len(nums); i++ {
-		for j := i; j < len(nums); j++ {
-			x, y := nums[i], nums[j]
+// Test 2:
+// Input: nums = [10,100]
+// 10 ^ 100 = 110
+// Expected Output: 0
+// Explanation: There are 2 strong pairs in the array nums: (10, 10) and (100, 100).
+// The maximum XOR possible from these pairs is 10 XOR 10 = 0 since the pair (100, 100) also gives 100 XOR 100 = 0.
 
-			if math.Abs(float64(x-y)) <= float64(min(x, y)) {
-				maxXOR = max(maxXOR, x^y)
-			}
-		}
-	}
+// Example 3:
+// Input: nums = [5,6,25,30]
+// Output: 7
+// Explanation: There are 6 strong pairs in the array nums: (5, 5), (5, 6), (6, 6), (25, 25), (25, 30) and (30, 30).
+// The maximum XOR possible from these pairs is 25 XOR 30 = 7 since the only other non-zero XOR value is 5 XOR 6 = 3.
 
-	return maxXOR
-}
-
-/////////////
-
-func maximumStrongPairXor(nums []int) int {
-	maxXOR := 0
-
-	for i := 0; i < len(nums); i++ {
-		for j := i; j < len(nums); j++ {
-			x, y := nums[i], nums[j]
-
-			if abs(x-y) <= min(x, y) {
-				maxXOR = max(maxXOR, x^y)
-			}
-		}
-	}
-
-	return maxXOR
-}
-
-func abs(a int) int {
-	if a < 0 {
-		return -a
-	}
-	return a
-}
-
-////////////////////////////////////////////////////////////////////////////////
 
 func maximumStrongPairXor(nums []int) int {
-	ans := math.MinInt32
 	sort.Ints(nums)
+	maximumXOR := 0
 
 	for l, r := 0, 0; r < len(nums); r++ {
-		for r < len(nums) && abs(nums[l]-nums[r]) <= min(nums[l], nums[r]) {
-			ans = max(ans, nums[l]^nums[r])
-			r++
+
+		for !isStrongPair(nums[l], nums[r]) {
+			l++
 		}
-		l++
-		r = l - 1
+
+        // maximumXOR = max(maximumXOR, nums[l]^nums[r]) // так работает первый тест, но не работает следующие два
+		maximumXOR = max(maximumXOR, nums[l]^nums[r] + 1)
 	}
-    return ans
+
+	return maximumXOR
+}
+
+func isStrongPair(x, y int) bool {
+	return abs(x-y) <= min(x, y)
 }
 
 func abs(a int) int {
@@ -63,64 +47,16 @@ func abs(a int) int {
 	return a
 }
 
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
 
-////////////////////////////////////////////////////////////////////////////////
-
-C++
-class Solution {
-	public:
-		int maximumStrongPairXor(vector<int>& nums) {
-			int maxi = INT_MIN; int left = 0;
-	
-			sort(nums.begin(),nums.end());
-	
-			for(int right=0;right<nums.size()-1;right++){
-			  while(right<nums.size() &&
-			  min(nums[left],nums[right]) >= abs(nums[left]-nums[right])){
-					maxi = max(maxi , (nums[left]^nums[right]));
-					right++;
-				}
-				left++;
-				right = left-1;
-			}
-			
-			if(maxi == INT_MIN)
-			return 0 ;
-			else
-			return maxi;
-		}
-	};
-	
-////////////////////////////////////////////////////////////////////////////////
-
-class Solution {
-	public:
-		int maximumStrongPairXor(vector<int>& nums) {
-			//sort the array
-			sort(nums.begin(),nums.end());
-			//initialize two variables low & high
-			int low=0,high=1;
-			int s=0,mx=0;
-			for(;high<nums.size();high++){ 
-				//check for the condition & calculate xor
-				if(abs(nums[high]-nums[low])<=min(nums[low],nums[high])) {
-					s= nums[high] ^ nums[low];
-					//update mx
-					mx=max(s,mx);
-				}
-				else {
-					//take the low pointer forward and since high=low+1 
-					//and high will increment in the for loop make high=low
-					low++;
-					high=low;
-				}
-				//if high reaches the end of the array and yet the array 
-				//is not completely traversed, update high and low
-				if(high==nums.size()-1 && low<high) {
-					high=low;
-					low++;
-				} 
-			}
-			return mx;
-		}
-	}; 
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
