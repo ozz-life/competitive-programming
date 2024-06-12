@@ -64,3 +64,6 @@ func search(a []int, x int) int {
 		return -1
 	}
 }
+
+int LowerBoundRecursive {
+}

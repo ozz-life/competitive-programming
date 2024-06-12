@@ -22,6 +22,23 @@ func findMaxConsecutiveOnes(nums []int) int {
 	return windowBest
 }
 
+////
+
+func findMaxConsecutiveOnes(nums []int) int {
+	windowBest := 0
+	windowStart, windowEnd := 0, 0
+	for windowEnd = 0; windowEnd < len(nums); windowEnd++ {
+		if nums[windowEnd] == 0 {
+			currentWindow := windowEnd - windowStart
+			windowBest = max(windowBest, currentWindow)
+			windowStart = windowEnd + 1
+		}
+	}
+	windowBest = max(windowBest, windowEnd-windowStart)
+
+	return windowBest
+}
+
 /*
  * Dynamic Programming
  ******************************************************************************/
@@ -102,7 +119,7 @@ func findMaxConsecutiveOnes(nums []int) int {
  * WAT???
  ******************************************************************************/
 
- func findMaxConsecutiveOnes(nums []int) int {
+func findMaxConsecutiveOnes(nums []int) int {
 	currentLength, maxLength := 0, 0
 	for _, num := range nums {
 		if num != 0 {
