@@ -6,6 +6,19 @@ import "errors"
  * Sliding Window
  ******************************************************************************/
 
+ func findMaxConsecutiveOnes(nums []int) int {
+    var windowBest int
+    for l, r := 0, 0; r < len(nums); r++ {
+        if nums[r] == 0 {
+            l = r + 1
+        }
+
+        windowBest = max(windowBest, r - l + 1)
+    }
+
+    return windowBest
+}
+
 func findMaxConsecutiveOnes(nums []int) int {
 	windowStart, windowEnd := 0, 0
 	windowBest := 0

@@ -15,3 +15,21 @@ func numSubarrayProductLessThanK(nums []int, k int) int {
 
     return answer
 }
+
+func numSubarrayProductLessThanK(nums []int, k int) int {
+    var count int
+    product := 1
+
+    for left, right := 0, 0; right < len(nums); right++ {
+        product *= nums[right]
+
+        for product >= k && left <= right {
+            product /= nums[left]
+            left++
+        }
+
+        count += right - left + 1
+    }
+
+    return count
+}
