@@ -36,11 +36,9 @@ SELECT
     CASE
         WHEN TOTAL < 2.00 THEN 'Baseline Purchase'
         WHEN TOTAL BETWEEN 2.00
-        AND 6.99 THEN 'Low
-Purchase'
+        AND 6.99 THEN 'Low Purchase'
         WHEN TOTAL BETWEEN 7.00
-        AND 15.00 THEN 'Target
-Purchase'
+        AND 15.00 THEN 'Target Purchase'
         ELSE 'Top Performers'
     END AS PurchaseType
 FROM

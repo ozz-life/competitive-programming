@@ -1,16 +1,20 @@
 func smallerNumbersThanCurrent(nums []int) []int {
-    m := make(map[int]int, len(nums))
+    frequencyMap := make(map[int]int)
+
     for _, num := range nums {
-        m[num]++
+        frequencyMap[num]++
     }
 
     result := make([]int, len(nums))
-    for i := 0; i < len(nums); i++ {
-        for num, count := range m {
-            if num < nums[i] {
-                result[i] += count
+
+    for i, num := range nums {
+        count := 0
+        for k, v := range frequencyMap {
+            if k < num {
+                count += v
             }
         }
+        result[i] = count
     }
 
     return result

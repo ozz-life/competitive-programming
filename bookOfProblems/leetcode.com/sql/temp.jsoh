@@ -1,0 +1,130 @@
+{
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "workbench.iconTheme": "material-icon-theme",
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[scss]": {
+        "editor.defaultFormatter": "numso.prettier-standard-vscode"
+    },
+    "angular.experimental-ivy": true,
+    "files.saveConflictResolution": "overwriteFileOnDisk",
+    "tabnine.experimentalAutoImports": true,
+    "files.autoSave": "afterDelay",
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "security.workspace.trust.untrustedFiles": "open",
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook"
+    },
+    "notebook.cellToolbarLocation": {
+        "default": "right",
+        "jupyter-notebook": "left"
+    },
+    "git.autofetch": true,
+    "editor.fontLigatures": null,
+    "editor.fontFamily": "JetBrains Mono",
+    "[graphql]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "numso.prettier-standard-vscode"
+    },
+    "bracketPairColorizer.depreciation-notice": false,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "cSpell.userWords": [
+        "Deque",
+        "nestjs",
+        "todos",
+        "typegoose",
+        "webp"
+    ],
+    "diffEditor.renderSideBySide": false,
+    "editor.rulers": [
+    80
+    ],
+    "[markdown]": {
+        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+    },
+    "debug.javascript.autoAttachFilter": "disabled",
+    "pomodoro.break": 17,
+    "pomodoro.work": 52,
+    "emmet.preferences": {
+            "output.reverseAttributes": true
+    },
+    "redhat.telemetry.enabled": true,
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "ecsstractor_port.attributes": "className",
+    "editor.smoothScrolling": true,
+    "bitburner.fileWatcher.enable": true,
+    "bitburner.scriptRoot": "/home/ozz/bitburner",
+    "bitburner.authToken": "uWaJ1Iyeojst/im9KexveY4Xms0kR1VOsinxk8kfA40BYF1IkRSwesQ2zVQWyHI1",
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[python]": {
+        "editor.formatOnType": true,
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "editor.minimap.enabled": false,
+    "cSpell.language": "en,ru",
+    "google-translate.firstLanguage": "en",
+    "google-translate.secondLanguage": "zh-cn",
+    "cph.general.defaultLanguageTemplateFileLocation": "/home/oz/git/competitive-programming/template.go",
+    "cph.language.cpp.SubmissionCompiler": "GNU G++20 11.2.0 (64 bit, winlibs)",
+    "editor.autoClosingBrackets": "never",
+    "explorer.confirmDragAndDrop": false,
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "clangd.path": "/home/oz/.config/Code/User/globalStorage/llvm-vs-code-extensions.vscode-clangd/install/16.0.2/clangd_16.0.2/bin/clangd",
+    "cph.language.cpp.Args": "-std=c++20",
+    "[sql]": {
+        "editor.defaultFormatter": "adpyke.vscode-sql-formatter",
+        "sql-formatter.dialect": "postgresql",
+        "sql-formatter.tabWidth": 4,
+        "sql-formatter.keywordCase": "upper"
+        "sql-formatter.uppercase": true,
+    },
+    "sql-formatter.uppercase": true,
+    "editor.autoClosingOvertype": "never",
+    "editor.autoClosingQuotes": "never",
+    "editor.unicodeHighlight.allowedCharacters": {
+        "​": true
+    },
+    "editor.suggest.showCustomcolors": false,
+    "[cpp]": {
+    
+    },
+    "jsannotations.enabled": false,
+    "powermode.presets": "flames",
+    "go.toolsManagement.autoUpdate": true,
+    "cmake.configureOnOpen": true,
+    "window.zoomLevel": 1,
+    "git.openRepositoryInParentFolders": "never",
+    "diffEditor.maxComputationTime": 0,
+    "cmake.showOptionsMovedNotification": false,
+    "[csharp]": {
+        "editor.defaultFormatter": "csharpier.csharpier-vscode"
+    },
+    "cph.general.menuChoices": "go cpp java js python c rust",
+    "cph.general.defaultLanguage": "go",
+    "terminal.integrated.fontFamily": "JetBrains Mono",
+    "terminal.integrated.fontWeight": "normal",
+    "editor.codeLensFontFamily": "JetBrains Mono",
+    "editor.experimentalInlineEdit.fontFamily": "JetBrains Mono",
+    "editor.inlayHints.fontFamily": "JetBrains Mono",
+    "editor.inlineSuggest.fontFamily": "JetBrains Mono",
+    "debug.console.fontFamily": "JetBrains Mono",
+    "scm.inputFontFamily": "JetBrains Mono",
+    "wakatime.apiKey": "1d22c232-d65b-425b-b31c-a92e20021eb0"
+}

@@ -26,32 +26,51 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"sort"
 )
+
+/*
+ * Common
+ ******************************************************************************/
+
+// Передаём адреса. swap(&a, &b)
+func swap(a *int, b *int) {
+	temp := *a
+	*a = *b
+	*b = temp
+}
 
 /*
  * Math
  ******************************************************************************/
 
 func gcd(a, b int) int {
-	for a != 0 {
-		a, b = b%a, a
+	for b > 0 {
+		a %= b
+		a, b = b, a
+		//swap(&a, &b)
 	}
-	return b
+	return a
 }
+
+func lcm(a, b int) int {
+	return a / gcd(a, b) * b
+}
+
 func abs(x int) int {
 	if x < 0 {
 		return -x
 	}
 	return x
 }
-func min(a, b int) int {
+
+func min[T int | string](a, b T) T {
 	if b < a {
 		return b
 	}
 	return a
 }
-func max(a, b int) int {
+
+func max[T int | string](a, b T) T {
 	if b > a {
 		return b
 	}
@@ -150,68 +169,46 @@ func StringIsPalindrome(s string) bool {
 	return true
 }
 
+func StringSumOfDigits(s string) int {
+	sum := 0
+	for _, r := range s {
+		sum += int(r - '0')
+	}
+	return sum
+}
+
 /*
  * Solve
  ******************************************************************************/
 
-func LowerBound(a []int, x int) int {
-	l := -1     // a[l] < x
-	r := len(a) // a[r] >= x
-	for r > l+1 {
-		m := l + (r-l)/2 // m > l, m < r
-		if a[m] < x {
-			l = m
-		} else {
-			r = m
-		}
-	}
-	return r
-}
+// 1 Раунд, не хватает 1A1F
 
-func UpperBound(a []int, x int) int {
-	l := -1     // a[l] <= x
-	r := len(a) // a[r] > x
-	for r > l+1 {
-		m := l + (r-l)/2 // m > l, m < r
-		if a[m] <= x {
-			l = m
-		} else {
-			r = m
-		}
-	}
-	return l
-}
-
-func lowerBound(a []int, x int) int {
-	return sort.Search(len(a), func(i int) bool { return a[i] >= x })
-}
-
-func upperBound(a []int, x int) int {
-	return sort.Search(len(a), func(i int) bool { return a[i] > x })
-}
-
+// 'A', 'B', 'C', 'D', 'E', 'F', 'G'. 
 func solve(in *bufio.Reader, out *bufio.Writer) {
-	var n, k int
-	fmt.Fscan(in, &n)
-	a := make([]int, n)
-	for i := range a {
-		fmt.Fscan(in, &a[i])
+	var n, m int // n длина строки, кол-во задач, m раундов
+	var a string
+	var problemsType string = "ABCDEFG"
+	fmt.Fscan(in, &n, &m, &a)
+
+	charFrequency := make(map[byte]int)
+	
+	for i := 0; i < len(problemsType); i++ {
+		charFrequency[problemsType[i]] = 0
 	}
-	fmt.Fscan(in, &k)
-	sort.Ints(a)
 
-	for i := 0; i < k; i++ {
-		var l, r int
-		fmt.Fscan(in, &l, &r)
-
-		// lIdx := LowerBound(a, l)
-		// rIdx := UpperBound(a, r)
-		// fmt.Fprintf(out, "%d ", rIdx - lIdx + 1)
-
-		lIdx := lowerBound(a, l)
-		rIdx := upperBound(a, r)
-		fmt.Fprintf(out, "%d ", rIdx-lIdx)
+	for i := 0; i < len(a); i++ {
+		charFrequency[a[i]]++
 	}
+
+	missingCount := 0
+	for i := 0; i < len(problemsType); i++ {
+		char := problemsType[i]
+		if charFrequency[char] < m {
+			missingCount += (m - charFrequency[char])
+		}
+	}
+
+	fmt.Fprintln(out, missingCount)
 }
 
 /*
@@ -223,10 +220,10 @@ func main() {
 	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
 
-	// var count_test int
-	// fmt.Fscan(in, &count_test)
+	var count_test int
+	fmt.Fscan(in, &count_test)
 
-	var count_test int = 1
+	//var count_test int = 1
 	for i := 0; i < count_test; i++ {
 		solve(in, out)
 	}

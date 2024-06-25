@@ -30,28 +30,48 @@ import (
 )
 
 /*
+ * Common
+ ******************************************************************************/
+
+// Передаём адреса. swap(&a, &b)
+func swap(a *int, b *int) {
+	temp := *a
+	*a = *b
+	*b = temp
+}
+
+/*
  * Math
  ******************************************************************************/
 
 func gcd(a, b int) int {
-	for a != 0 {
-		a, b = b%a, a
+	for b > 0 {
+		a %= b
+		a, b = b, a
+		//swap(&a, &b)
 	}
-	return b
+	return a
 }
+
+func lcm(a, b int) int {
+	return a / gcd(a, b) * b
+}
+
 func abs(x int) int {
 	if x < 0 {
 		return -x
 	}
 	return x
 }
-func min(a, b int) int {
+
+func min[T int | string](a, b T) T {
 	if b < a {
 		return b
 	}
 	return a
 }
-func max(a, b int) int {
+
+func max[T int | string](a, b T) T {
 	if b > a {
 		return b
 	}
@@ -150,16 +170,24 @@ func StringIsPalindrome(s string) bool {
 	return true
 }
 
+func StringSumOfDigits(s string) int {
+	sum := 0
+	for _, r := range s {
+		sum += int(r - '0')
+	}
+	return sum
+}
+
 /*
  * Solve
  ******************************************************************************/
 
-func LowerBound(a []int, x int) int {
-	l := -1     // a[l] < x
-	r := len(a) // a[r] >= x
+func LowerBoundDesc(a []int, x int) int {
+	l := -1     // a[l] > x
+	r := len(a) // a[r] <= x
 	for r > l+1 {
 		m := l + (r-l)/2 // m > l, m < r
-		if a[m] < x {
+		if a[m] > x {
 			l = m
 		} else {
 			r = m
@@ -168,12 +196,12 @@ func LowerBound(a []int, x int) int {
 	return r
 }
 
-func UpperBound(a []int, x int) int {
-	l := -1     // a[l] <= x
-	r := len(a) // a[r] > x
+func UpperBoundDesc(a []int, x int) int {
+	l := -1     // a[l] >= x
+	r := len(a) // a[r] < x
 	for r > l+1 {
-		m := l + (r-l)/2 // m > l, m < r
-		if a[m] <= x {
+		m := l + (r-l)/2
+		if a[m] >= x {
 			l = m
 		} else {
 			r = m
@@ -182,36 +210,39 @@ func UpperBound(a []int, x int) int {
 	return l
 }
 
-func lowerBound(a []int, x int) int {
-	return sort.Search(len(a), func(i int) bool { return a[i] >= x })
-}
-
-func upperBound(a []int, x int) int {
-	return sort.Search(len(a), func(i int) bool { return a[i] > x })
+func sortIntsDesc(a []int) {
+	sort.Slice(a, func(i, j int) bool {
+		return a[i] > a[j]
+	})
 }
 
 func solve(in *bufio.Reader, out *bufio.Writer) {
-	var n, k int
-	fmt.Fscan(in, &n)
+	var n, f, k int // количество кубиков, любимый кубик, сколько убрали
+	// f индексируется с 1, т.е если f = 2, то в массиве это будет индекс 1.
+	fmt.Fscan(in, &n, &f, &k)
+
 	a := make([]int, n)
 	for i := range a {
 		fmt.Fscan(in, &a[i])
 	}
-	fmt.Fscan(in, &k)
-	sort.Ints(a)
 
-	for i := 0; i < k; i++ {
-		var l, r int
-		fmt.Fscan(in, &l, &r)
+	fElem := a[f-1]
+	k0 := k - 1 // К нуль индексу
+	sortIntsDesc(a)
 
-		// lIdx := LowerBound(a, l)
-		// rIdx := UpperBound(a, r)
-		// fmt.Fprintf(out, "%d ", rIdx - lIdx + 1)
+	lIdx := LowerBoundDesc(a, fElem)
+	rIdx := UpperBoundDesc(a, fElem)
 
-		lIdx := lowerBound(a, l)
-		rIdx := upperBound(a, r)
-		fmt.Fprintf(out, "%d ", rIdx-lIdx)
+	// YES, кубик удалён в любом случае
+	if rIdx < k {
+		fmt.Fprintln(out, "YES")
+	} else if lIdx > k0 {
+		fmt.Fprintln(out, "NO")
+	} else {
+		fmt.Fprintln(out, "MAYBE")
 	}
+
+	// fmt.Fprintln(out, a, lIdx, rIdx)
 }
 
 /*
@@ -223,10 +254,10 @@ func main() {
 	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
 
-	// var count_test int
-	// fmt.Fscan(in, &count_test)
+	var count_test int
+	fmt.Fscan(in, &count_test)
 
-	var count_test int = 1
+	//var count_test int = 1
 	for i := 0; i < count_test; i++ {
 		solve(in, out)
 	}
