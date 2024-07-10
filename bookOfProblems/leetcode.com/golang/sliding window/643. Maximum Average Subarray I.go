@@ -1,90 +1,21 @@
 func findMaxAverage(nums []int, k int) float64 {
-	windowStart, windowEnd := 0, 0
-	var windowSum, result float64
-	result = math.Inf(-1)
+    var windowSum int
+    windowBest := math.Inf(-1)
 
-	for windowEnd < len(nums) {
-		windowSum += float64(nums[windowEnd])
-		
-		if windowEnd >= k-1 {
-			result = max(result, windowSum/float64(k))
-			windowSum -= float64(nums[windowStart])
-			windowStart++
-		}
-		windowEnd++
-	}
+    for l, r := 0, 0; r < len(nums); r++ {
+        windowSum += nums[r]
 
-	return result
+		// if r >= k-1 { // или
+        if (r - l + 1) == k {
+            windowBest = math.Max(windowBest, float64(windowSum)/float64(k))
+            windowSum -= nums[l]
+            l++
+        }
+
+    }
+
+    return windowBest
 }
-
-func findMaxAverage(nums []int, k int) float64 {
-	windowStart := 0
-	windowSum, result := 0.0, -math.MaxFloat64
-
-	for windowEnd := 0; windowEnd < len(nums); windowEnd++ {
-		windowSum += float64(nums[windowEnd])
-
-		if windowEnd >= k-1 {
-			result = max(result, windowSum/float64(k))
-			windowSum -= float64(nums[windowStart])
-			windowStart++
-		}
-	}
-
-	return result
-}
-
-// Страшное окно
-////////////////////////////////////////////////////////////////////////////////
-
-func findMaxAverage(nums []int, k int) float64 {
-	windowStart, windowEnd := 0, 0
-	var windowSum, result float64
-
-	for windowEnd < k {
-		windowSum += float64(nums[windowEnd])
-		windowEnd++
-	}
-
-	result = windowSum / float64(k)
-
-	for windowEnd < len(nums) {
-		windowSum += float64(nums[windowEnd])
-		windowSum -= float64(nums[windowStart])
-		windowStart++
-		windowEnd++
-		currentAverage := windowSum / float64(k)
-		if currentAverage > result {
-			result = currentAverage
-		}
-	}
-
-	return result
-}
-// Страшное окно
-////////////////////////////////////////////////////////////////////////////////
-
-func findMaxAverage(nums []int, k int) float64 {
-	windowStart, windowSum := 0, 0.0
-
-	for i := 0; i < k; i++ {
-		windowSum += float64(nums[i])
-	}
-
-	windowBest := windowSum / float64(k)
-
-	for windowEnd := k; windowEnd < len(nums); windowEnd++ {
-		windowSum += float64(nums[windowEnd]) - float64(nums[windowStart])
-		windowStart++
-		currentAverage := windowSum / float64(k)
-		if currentAverage > windowBest {
-			windowBest = currentAverage
-		}
-	}
-
-	return windowBest
-}
-
 // PrefixSum
 ////////////////////////////////////////////////////////////////////////////////
 

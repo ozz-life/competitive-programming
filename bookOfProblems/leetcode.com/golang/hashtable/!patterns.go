@@ -136,7 +136,9 @@ func subarraySum(nums []int, k int) int {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// 4. Group Anagram
+// 4. Group Anagram https://leetcode.com/problems/group-anagrams/description/
+// Pattern Overview:
+// This pattern involves grouping anagrams together. It's useful for problems where you need to categorize words based on their character composition.
 // Further, we can again optimize this solution by using a frequency array of each
 // of the string which will have a O(K) time complexity which is better as compared
 // to sorting the string which takes O(KlogK) time complexity.
@@ -147,20 +149,17 @@ func subarraySum(nums []int, k int) int {
 // 	"abt": ["bat"]
 //  }
 
+// Canonical?
+
 func groupAnagrams(strs []string) [][]string {
 	anagramMap := make(map[string][]string)
 
 	for _, word := range strs {
 		sortedWord := sortString(word)
-
-		if group, found := anagramMap[sortedWord]; found {
-			anagramMap[sortedWord] = append(group, word)
-		} else {
-			anagramMap[sortedWord] = []string{word}
-		}
+		anagramMap[sortedWord] = append(anagramMap[sortedWord], word)
 	}
 
-	var result [][]string
+	result := make([][]string, 0, len(anagramMap))
 	for _, group := range anagramMap {
 		result = append(result, group)
 	}
@@ -169,69 +168,14 @@ func groupAnagrams(strs []string) [][]string {
 }
 
 func sortString(s string) string {
-	characters := []rune(s)
-	sort.Slice(characters, func(i, j int) bool {
-		return characters[i] < characters[j]
-	})
-	return string(characters)
-}
-
-///////////////////////////
-
-func groupAnagrams(strs []string) [][]string {
-	hash := make(map[string][]string)
-	for _, str := range strs {
-		key := get_key(str)
-		arr, exists := hash[key]
-		if !exists {
-			hash[key] = make([]string, 0)
-		}
-		hash[key] = append(arr, str)
-	}
-	answer := make([][]string, 0)
-	for _, val := range hash {
-		answer = append(answer, val)
-	}
-	return answer
-}
-
-func get_key(str string) string {
-	counter := make([]int, 26)
-	for _, char := range str {
-		counter[int(char)-97] += 1
-	}
-	answer := make([]string, len(counter))
-	for i, number := range counter {
-		answer[i] = strconv.Itoa(number)
-	}
-	return strings.Join(answer, ".")
-}
-
-/////////////////////////////
-
-func sortString(s string) string {
 	runes := []rune(s)
-	sort.Slice(runes, func(i, j int) bool { return runes[i] < runes[j] })
+	sort.Slice(runes, func(i, j int) bool {
+		return runes[i] < runes[j]
+	})
 	return string(runes)
 }
 
-func groupAnagrams(strs []string) [][]string {
-	anagrams := make(map[string][]string)
-
-	for _, str := range strs {
-		sortedStr := sortString(str)
-		anagrams[sortedStr] = append(anagrams[sortedStr], str)
-	}
-
-	var result [][]string
-	for _, group := range anagrams {
-		result = append(result, group)
-	}
-
-	return result
-}
-
-////////////////////////////////
+///////////////////////////
 
 func groupAnagrams(strs []string) [][]string {
 	result := make([][]string, 0)
@@ -251,65 +195,6 @@ func groupAnagrams(strs []string) [][]string {
 }
 
 ////////////////////////////////////
-
-func groupAnagrams(strs []string) [][]string {
-	mapIndex := make(map[int][]string)
-	for _, v := range strs {
-		occurance := getOccuranceArray(v)
-		hashCode := getHashCode(occurance)
-		if arr, ok := mapIndex[hashCode]; ok {
-			mapIndex[hashCode] = append(arr, v)
-		} else {
-			mapIndex[hashCode] = []string{v}
-		}
-	}
-	ans := make([][]string, 0)
-	for _, v := range mapIndex {
-		ans = append(ans, v)
-	}
-	return ans
-}
-
-func getOccuranceArray(word string) []int {
-	arr := make([]int, 26)
-	for _, v := range word {
-		arr[v-'a']++
-	}
-	return arr
-}
-
-func getHashCode(occurances []int) int {
-	hashCode := 64
-	for _, v := range occurances {
-		hashCode = 31*hashCode + v
-	}
-	return hashCode
-}
-
-////////////////////////////////////////
-
-func groupAnagrams(strs []string) [][]string {
-	m := make(map[[26]int]int)
-
-	res := make([][]string, 0)
-
-	for _, str := range strs {
-		tmp := [26]int{}
-		for _, r := range str {
-			tmp[r-'a']++
-		}
-		if _, ok := m[tmp]; !ok {
-			m[tmp] = len(res)
-			res = append(res, []string{})
-		}
-		res[m[tmp]] = append(res[m[tmp]], str)
-
-	}
-
-	return res
-}
-
-////////////////////////////////////////////
 
 func sortString(s string) string {
 	r := []rune(s)
@@ -335,4 +220,109 @@ func groupAnagrams(strs []string) [][]string {
 	return ans
 }
 
-////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// 5. Longest Consecutive Sequence
+
+// Pattern Overview:
+// This pattern involves finding the longest consecutive sequence of elements in
+// an array. It's crucial for problems related to sequence and set operations.
+
+// Example Problem:
+// Leetcode Problem 128 - Longest Consecutive Sequence
+
+// Another really good example is 'montonic stack' questions such
+// as https://leetcode.com/problems/next-greater-element-ii/, which also has
+// a loop inside a loop but has TC of O(2N).
+
+// red-black tree
+// disjoint set function of Ackermann
+
+// Use a hash map to store boundary information of consecutive sequence for each element;
+// there are 4 cases when a new element i reached:
+// neither i+1 nor i-1 has been seen: m[i]=1;
+// both i+1 and i-1 have been seen: extend m[i+m[i+1]] and m[i-m[i-1]] to each other;
+// only i+1 has been seen: extend m[i+m[i+1]] and m[i] to each other;
+// only i-1 has been seen: extend m[i-m[i-1]] and m[i] to each other.
+
+// If the unordered_map m doesnot contain i, m[i] will return 0
+// This rule means, if there is no i + 1 in m(Case3), the assignment sentences
+// turns out to be
+// r = max(r, m[i] = m[i + 0] = m[i - m[i - 1]] = m[i + 0] + m[i - 1] + 1);
+//More concisely, it's
+//r = max(r, m[i] = m[i] = m[i - m[i - 1]] = m[i - 1] + 1);.
+// We can analysis case1, case2 and case4 in a similar way.
+
+// Step1: neither i+1 nor i-1 has been seen: m[i]=1;
+// Explanation: current value is not in any sequence so far, so it's sequence of 1
+
+// Step2: both i+1 and i-1 have been seen: extend m[i+m[i+1]] and m[i-m[i-1]] to each other;
+// Explanation: current value is in middle of sequence, so it could union left sequence and right sequence. New sequence size is size(left_sequence) + 1 + size(right_sequence)
+// After we calculate the size of new sequence, we need to update upperbound and lowerbound of sequence
+// Why we should update upperbound and lowerbound of sequence? To sequence become bigger when we union, we only check lowerbound and upperbound
+
+// Step3: only i+1 has been seen: extend m[i+m[i+1]] and m[i] to each other;
+// Same explanation as Step2
+
+// Step4: only i-1 has been seen: extend m[i-m[i-1]] and m[i] to each other.
+// Same explanation as Step2
+
+func longestConsecutive(nums []int) int {
+	m := make(map[int]int)
+	r := 0
+
+	for _, num := range nums {
+		if m[num] > 0 {
+			continue
+		}
+		left, right := m[num-1], m[num+1]
+		length := left + right + 1
+		m[num] = length
+		m[num-left] = length
+		m[num+right] = length
+		if length > r {
+			r = length
+		}
+	}
+
+	return r
+}
+
+// Whenever a new element n is inserted into the map, do two things:
+
+// See if n - 1 and n + 1 exist in the map, and if so, it means there is an existing sequence next to n. Variables left and right will be the length of those two sequences, while 0 means there is no sequence and n will be the boundary point later. Store (left + right + 1) as the associated value to key n into the map.
+// Use left and right to locate the other end of the sequences to the left and right of n respectively, and replace the value with the new length.
+// Everything inside the for loop is O(1) so the total time is O(n).
+
+func longestConsecutive(nums []int) int {
+	m := make(map[int]int)
+	res := 0
+
+	for _, n := range nums {
+		if _, exists := m[n]; !exists {
+			left := 0
+			if val, ok := m[n-1]; ok {
+				left = val
+			}
+			right := 0
+			if val, ok := m[n+1]; ok {
+				right = val
+			}
+			// sum: length of the sequence n is in
+			sum := left + right + 1
+			m[n] = sum
+
+			// keep track of the max length
+			if sum > res {
+				res = sum
+			}
+
+			// extend the length to the boundary(s)
+			// of the sequence
+			// will do nothing if n has no neighbors
+			m[n-left] = sum
+			m[n+right] = sum
+		}
+	}
+
+	return res
+}
