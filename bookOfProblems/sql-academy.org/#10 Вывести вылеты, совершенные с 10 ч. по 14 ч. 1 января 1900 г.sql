@@ -1,0 +1,7 @@
+SELECT
+    *
+FROM
+    Trip
+WHERE
+    time_out BETWEEN '1900-01-01T10:00:00.000Z'
+    AND '1900-01-01T14:00:00.000Z';

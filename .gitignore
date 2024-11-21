@@ -1,0 +1,15 @@
+.vscode/
+.cph/
+
+bookOfProblems/close__contest/
+bookOfProblems/close__contest/*
+
+a
+a.out
+temp/
+
+input.txt
+output.txt
+
+c_cpp_properties.json
+pvs-studio.txt
